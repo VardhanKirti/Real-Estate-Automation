@@ -17,9 +17,10 @@ Four agents, each built for a specific job, each with real memory of the convers
 
 Every agent:
 - Talks over a chat interface, with real conversational memory per session
-- Can read the CRM database directly (through a **read-only** database user — it can look things up, but a write only ever happens through the CRM's own API, where the app's own rules still apply)
+- Reads and writes exclusively through the CRM's own REST API — no direct database access, no credential beyond the CRM's own bearer token, so the app's own validation and permission rules always run
 - Is visible everywhere an agent should be: the agent roster, the health/status page, the chat list, its own workflow canvas, and its own skills/playbook page
 - Never claims a write succeeded unless the system it called actually confirmed it — this was tested by deliberately breaking things and checking the agent didn't lie about it
+- Runs **in-process**, inside this same Next.js app — not as a separately-hosted workflow — so there's nothing extra to keep running or exposed publicly when this deploys anywhere
 
 ## The dashboard
 
@@ -28,9 +29,11 @@ The home dashboard shows **live** data — leads, properties, and the brokers de
 ## How it's built
 
 - **Frontend / operator console**: Next.js 14, SQLite for local app state
-- **Agents**: run in [n8n](https://n8n.io) (self-hosted), each as a webhook-triggered workflow — an AI Agent node (Claude), a scoped MySQL read tool, and one or more HTTP tools that call the CRM's real API
-- **CRM**: a Laravel application (Skyescraper) — all writes go through its REST API with a Sanctum bearer token, so every write obeys the CRM's own validation and roles
+- **Agents**: [LangGraph.js](https://langchain-ai.github.io/langgraphjs/)'s `createReactAgent`, running in-process — Claude as the model (direct Anthropic API), a real tool per CRM action, and this app's own conversation history replayed on each turn (see `lib/agents/sky-agents.ts`, `lib/agents/langgraph-runner.ts`)
+- **CRM**: a Laravel application (Skyescraper) — every read and write goes through its REST API with a Sanctum bearer token, so every action obeys the CRM's own validation and roles (`lib/agents/skyescraper-api.ts`)
 - **Caching**: every live read goes through one stale-while-revalidate cache (30s fresh, background refresh after), pre-warmed at boot — not a dashboard that waits on a third-party API every time someone opens it
+
+This started as four separately-hosted [n8n](https://n8n.io) workflows (one per agent). They were rebuilt on LangGraph.js and moved in-process specifically so the whole app — agents included — can deploy as a single Next.js app (e.g. on Netlify) with no second always-on service to host and expose publicly.
 
 ## Running it yourself
 
@@ -44,7 +47,7 @@ npm run dev                    # http://localhost:4100
 You'll need a few things in `.env.local` (see `.env.example`) before the agents and live data come alive:
 
 - `SKYESCRAPER_API_URL` / `SKYESCRAPER_API_TOKEN` — your CRM's API base URL and a bearer token
-- `SKYESCRAPER_N8N_*_WEBHOOK` — the webhook URL for each n8n agent workflow
+- `ANTHROPIC_API_KEY` — powers the four LangGraph agents directly
 - `GLADOS_BRAND=realestate` — switches the console's name and logo to Real Estate Automation
 
 Without those, the app still runs — it just shows honest "not configured" states instead of fake numbers.

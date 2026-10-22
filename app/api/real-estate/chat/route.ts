@@ -1,31 +1,21 @@
 /**
- * Thin server-side proxy to the n8n Lead Management workflow — keeps
- * SKYESCRAPER_N8N_LEAD_WEBHOOK out of the browser bundle. The real estate
- * dashboard's chat box posts here; this just forwards the message and
- * returns the workflow's reply.
+ * Thin server-side proxy to the Lead Management LangGraph agent — kept for
+ * any caller that still posts here directly. The dashboard itself links to
+ * /chats, which goes through lib/agents/chat.ts the normal way; this route
+ * runs the same in-process agent (lib/agents/sky-agents.ts) as a one-off
+ * turn, with no stored history.
  */
 import { NextResponse } from 'next/server';
+import { chatWithSkyAgent, skyAgentConfigured } from '@/lib/agents/sky-agents';
 
 export async function POST(req: Request) {
-  const webhookUrl = process.env.SKYESCRAPER_N8N_LEAD_WEBHOOK;
-  if (!webhookUrl) {
-    return NextResponse.json({ reply: 'The n8n Lead Management webhook is not configured — set SKYESCRAPER_N8N_LEAD_WEBHOOK in .env.local.' }, { status: 200 });
+  if (!skyAgentConfigured()) {
+    return NextResponse.json({ reply: 'Skyescraper agents are not configured — set SKYESCRAPER_API_TOKEN and AI_GATEWAY_API_KEY in .env.local.' }, { status: 200 });
   }
   const { message } = (await req.json()) as { message?: string };
   if (!message || !message.trim()) {
     return NextResponse.json({ error: 'message is required' }, { status: 400 });
   }
-  try {
-    const res = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
-      signal: AbortSignal.timeout(45000),
-    });
-    if (!res.ok) throw new Error(`webhook HTTP ${res.status}`);
-    const body = (await res.json()) as { output?: string; reply?: string };
-    return NextResponse.json({ reply: body.output ?? body.reply ?? JSON.stringify(body) });
-  } catch (err) {
-    return NextResponse.json({ reply: `Could not reach the Lead Management workflow: ${err instanceof Error ? err.message : String(err)}` });
-  }
+  const result = await chatWithSkyAgent('lead-management', [{ role: 'user', content: message }]);
+  return NextResponse.json({ reply: result.text });
 }

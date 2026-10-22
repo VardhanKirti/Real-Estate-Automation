@@ -19,6 +19,10 @@
     "lab-e2e": "tsx scripts/lab-e2e-dry.ts"
   },
   "dependencies": {
+    "@langchain/anthropic": "^1.5.13",
+    "@langchain/core": "^1.2.20",
+    "@langchain/langgraph": "^1.5.2",
+    "@langchain/openai": "^1.6.3",
     "@miosa/sdk": "^3.2.5",
     "@notionhq/client": "^5.22.0",
     "@slack/web-api": "^7.16.0",

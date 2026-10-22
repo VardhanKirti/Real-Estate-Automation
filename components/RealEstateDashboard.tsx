@@ -245,7 +245,7 @@ export function RealEstateDashboard() {
             <h1 className="text-xl font-bold tracking-tight text-[var(--text)]">Prime Realty — Operations Hub</h1>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(63,217,104,0.3)] bg-[rgba(63,217,104,0.08)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--ok)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--ok)] animate-pulse" />
-              n8n Live · All Agents Online
+              LangGraph Live · All Agents Online
             </span>
           </div>
           <p className="mt-1 text-xs text-[var(--text-2)]">
@@ -476,11 +476,11 @@ export function RealEstateDashboard() {
                     <span className="text-xs font-semibold text-[var(--text)]">Lead Management Agent</span>
                   </div>
                   <span className="rounded bg-[rgba(63,217,104,0.15)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--ok)]">
-                    n8n
+                    LangGraph
                   </span>
                 </div>
                 <div className="mt-1.5 text-[11px] text-[var(--text-2)]">
-                  Reads and acts on real Skyescraper leads via n8n.
+                  Reads and acts on real Skyescraper leads via an in-process LangGraph agent.
                 </div>
                 <Link
                   href="/chats?agent=lead-management"

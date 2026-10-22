@@ -16,6 +16,7 @@ import type { AgentMessage } from '@/lib/schemas';
 import { WIZARD_ID, chatThreads, threadPage, type ChatThread, type RosterAgent } from '@/lib/chats';
 import { foMode, sampleChatMessages, type FoMode } from '@/lib/fo-sample';
 import { llmStatus } from '@/lib/connectors/llm';
+import { SKY_AGENTS, skyAgentConfigured } from '@/lib/agents/sky-agents';
 import { setupHrefFor } from '@/lib/integrations-catalog';
 import { agentAvatars } from '@/lib/agent-avatars';
 import { readProjects, type WizardProject } from '@/lib/wizard/store';
@@ -179,11 +180,12 @@ export async function buildChatsView(db: Db, url: string, opts: { agent?: string
   const configured = llm.state === 'connected';
   const sample = mode !== 'live';
   const wanted = opts.agent && (opts.agent === WIZARD_ID || agents.some((a) => a.id === opts.agent)) ? opts.agent : WIZARD_ID;
-  // A webhook-backed agent (e.g. Lead Management → n8n) bypasses the AI
-  // Gateway entirely (lib/agents/chat.ts), so its composer should never be
-  // gated on AI_GATEWAY_API_KEY — only on the webhook itself being set.
-  const selectedHasWebhook = wanted !== WIZARD_ID && Boolean(db.agents.get(wanted)?.webhookUrl);
-  const composerReady = configured || selectedHasWebhook;
+  // A Skyescraper agent (Lead Management etc.) runs its own LangGraph loop
+  // (lib/agents/sky-agents.ts) straight against Anthropic, not the generic
+  // AI Gateway check above — it has its own two credentials (Skyescraper +
+  // Anthropic), so its composer readiness is checked separately here.
+  const selectedIsSkyAgent = wanted !== WIZARD_ID && Boolean(SKY_AGENTS[wanted]);
+  const composerReady = configured || (selectedIsSkyAgent && skyAgentConfigured());
   return {
     now: opts.now ?? Date.now(),
     mode,

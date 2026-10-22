@@ -12,6 +12,7 @@ import type { GladosDb } from '@/lib/db';
 import type { RuntimeAgent } from '@/lib/agents/runtime';
 import type { AgentMessage } from '@/lib/schemas';
 import { chatModelFor } from '@/lib/agent-review';
+import { SKY_AGENTS, chatWithSkyAgent } from '@/lib/agents/sky-agents';
 
 export type ChatResult = { reply: string; messages: AgentMessage[] };
 
@@ -54,29 +55,26 @@ export async function chatWithAgent(
   const history = db.agentMessages.byAgent(agentId);
   const llmMessages: LlmMessage[] = history.map((m) => ({ role: m.role, content: m.content }));
 
-  // Webhook-backed agents (e.g. an n8n workflow) bypass the built-in LLM
-  // gateway entirely — the workflow owns its own model, tools and database
-  // access. This is the integration point for agents like Lead Management
-  // that need to actually read/write a live external system, not just use
-  // the generic read-only connectors every other agent gets via chatTools().
-  const webhookUrl = db.agents.get(agentId)?.webhookUrl;
-  if (webhookUrl) {
-    let text: string;
-    try {
-      const res = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, history: llmMessages }),
-        signal: AbortSignal.timeout(45000),
+  // Skyescraper agents (Lead Management, Property Inventory, Property
+  // Intelligence, Client Care) run their own LangGraph tool-calling loop
+  // in-process (lib/agents/sky-agents.ts) instead of the generic gateway
+  // path below — they have their own system prompt, their own real
+  // read/write tools against the Skyescraper API, and no need for the
+  // read-only chatTools() every other agent gets.
+  if (SKY_AGENTS[agentId]) {
+    const result = await chatWithSkyAgent(agentId, llmMessages);
+    if (result.toolCalls.length) {
+      db.agentMessages.insert({
+        id: randomUUID(),
+        agentId,
+        role: 'tool',
+        content: result.toolCalls.map((c) => `${c.name} → ${JSON.stringify(c.result)}`).join('\n'),
+        toolCalls: result.toolCalls,
+        createdAt: now(),
       });
-      if (!res.ok) throw new Error(`webhook HTTP ${res.status}`);
-      const body = (await res.json()) as { output?: string; reply?: string; message?: string };
-      text = body.output ?? body.reply ?? body.message ?? JSON.stringify(body);
-    } catch (err) {
-      text = `Could not reach ${agent.name}'s workflow (${webhookUrl}): ${err instanceof Error ? err.message : String(err)}`;
     }
-    db.agentMessages.insert({ id: randomUUID(), agentId, role: 'assistant', content: text, toolCalls: [], createdAt: now() });
-    return { reply: text, messages: db.agentMessages.byAgent(agentId) };
+    db.agentMessages.insert({ id: randomUUID(), agentId, role: 'assistant', content: result.text, toolCalls: [], createdAt: now() });
+    return { reply: result.text, messages: db.agentMessages.byAgent(agentId) };
   }
 
   const tools = agent.chatTools?.();

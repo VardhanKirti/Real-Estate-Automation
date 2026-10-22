@@ -19,6 +19,7 @@ import type { LlmToolSpec } from '@/lib/connectors/llm';
 import { bdpilotStatePath, gbrainBin, gbrainConfigured } from '@/lib/stores';
 import type { AgentRunResult, RuntimeAgent } from '@/lib/agents/runtime';
 import { contentLabAgent } from '@/lib/agents/content-lab';
+import { skyAgentConfigured } from '@/lib/agents/sky-agents';
 
 /**
  * The agent roster. Every run() reports live, honest status: an agent whose
@@ -403,48 +404,48 @@ export const realAgents: RuntimeAgent[] = [
     id: 'lead-management',
     name: 'Lead Management Agent',
     description:
-      'Reads and acts on real Skyescraper leads — scoring, stage moves, agent assignment and activity logging — via an n8n workflow with its own database and API tools.',
+      'Reads and acts on real Skyescraper leads — stage moves, agent assignment and activity logging — via an in-process LangGraph agent with real read/write tools against the Skyescraper API.',
     departmentId: 'dept-sales',
-    configured: () => envPresent('SKYESCRAPER_N8N_LEAD_WEBHOOK'),
+    configured: skyAgentConfigured,
     async run() {
-      if (!envPresent('SKYESCRAPER_N8N_LEAD_WEBHOOK')) return notConfigured('The n8n Lead Management webhook (SKYESCRAPER_N8N_LEAD_WEBHOOK)');
-      return { ok: true, summary: 'Routes chat messages to the n8n Lead Management workflow, which reads and writes the live Skyescraper database.' };
+      if (!skyAgentConfigured()) return notConfigured('Skyescraper (SKYESCRAPER_API_TOKEN) or Anthropic (ANTHROPIC_API_KEY)');
+      return { ok: true, summary: 'Runs as a LangGraph tool-calling agent, reading and writing the live Skyescraper CRM through its API.' };
     },
   },
   {
     id: 'property-inventory',
     name: 'Property Inventory Agent',
     description:
-      'Reads and acts on real Skyescraper inventory — unit availability (Available/Held/Sold) and project publish/archive status — via an n8n workflow with its own database and API tools.',
+      'Reads and acts on real Skyescraper inventory — unit status and project publish/archive state — via an in-process LangGraph agent with real read/write tools against the Skyescraper API.',
     departmentId: 'dept-sales',
-    configured: () => envPresent('SKYESCRAPER_N8N_INVENTORY_WEBHOOK'),
+    configured: skyAgentConfigured,
     async run() {
-      if (!envPresent('SKYESCRAPER_N8N_INVENTORY_WEBHOOK')) return notConfigured('The n8n Property Inventory webhook (SKYESCRAPER_N8N_INVENTORY_WEBHOOK)');
-      return { ok: true, summary: 'Routes chat messages to the n8n Property Inventory workflow, which reads and writes the live Skyescraper database.' };
+      if (!skyAgentConfigured()) return notConfigured('Skyescraper (SKYESCRAPER_API_TOKEN) or Anthropic (ANTHROPIC_API_KEY)');
+      return { ok: true, summary: 'Runs as a LangGraph tool-calling agent, reading and writing the live Skyescraper CRM through its API.' };
     },
   },
   {
     id: 'property-intelligence',
     name: 'Property Intelligence Agent',
     description:
-      'Summarises real Skyescraper listings, spots data-quality gaps and demand signals, and writes its findings as real project notes — via an n8n workflow with its own database and API tools.',
+      'Summarises real Skyescraper listings and writes its findings as real project notes — via an in-process LangGraph agent with real read/write tools against the Skyescraper API.',
     departmentId: 'dept-marketing-growth',
-    configured: () => envPresent('SKYESCRAPER_N8N_INTEL_WEBHOOK'),
+    configured: skyAgentConfigured,
     async run() {
-      if (!envPresent('SKYESCRAPER_N8N_INTEL_WEBHOOK')) return notConfigured('The n8n Property Intelligence webhook (SKYESCRAPER_N8N_INTEL_WEBHOOK)');
-      return { ok: true, summary: 'Routes chat messages to the n8n Property Intelligence workflow, which reads and writes the live Skyescraper database.' };
+      if (!skyAgentConfigured()) return notConfigured('Skyescraper (SKYESCRAPER_API_TOKEN) or Anthropic (ANTHROPIC_API_KEY)');
+      return { ok: true, summary: 'Runs as a LangGraph tool-calling agent, reading and writing the live Skyescraper CRM through its API.' };
     },
   },
   {
     id: 'client-care',
     name: 'Client Care Agent',
     description:
-      'Keeps buyer follow-ups on track — looks up real leads and creates reminders and notes against them — via an n8n workflow with its own database and API tools.',
+      'Keeps buyer follow-ups on track — looks up real leads and creates reminders and notes against them — via an in-process LangGraph agent with real read/write tools against the Skyescraper API.',
     departmentId: 'dept-clients',
-    configured: () => envPresent('SKYESCRAPER_N8N_CARE_WEBHOOK'),
+    configured: skyAgentConfigured,
     async run() {
-      if (!envPresent('SKYESCRAPER_N8N_CARE_WEBHOOK')) return notConfigured('The n8n Client Care webhook (SKYESCRAPER_N8N_CARE_WEBHOOK)');
-      return { ok: true, summary: 'Routes chat messages to the n8n Client Care workflow, which reads and writes the live Skyescraper database.' };
+      if (!skyAgentConfigured()) return notConfigured('Skyescraper (SKYESCRAPER_API_TOKEN) or Anthropic (ANTHROPIC_API_KEY)');
+      return { ok: true, summary: 'Runs as a LangGraph tool-calling agent, reading and writing the live Skyescraper CRM through its API.' };
     },
   },
   // ── MARKETING / GROWTH ───────────────────────────────────────────────

@@ -23,7 +23,10 @@
 import { TTL, swr } from '@/lib/swr';
 import type { Booking, BookingStatus, Broker, LeadSource, Property, PropertyStatus, PropertyType } from '@/lib/real-estate';
 
-function skyescraperConfig(): { token: string; baseUrl: string } | null {
+/** Exported for lib/agents/skyescraper-api.ts — the LangGraph agents' tool
+ *  layer shares this exact config resolution, so "not configured" means the
+ *  same thing everywhere in the app. */
+export function skyescraperConfig(): { token: string; baseUrl: string } | null {
   const token = process.env.SKYESCRAPER_API_TOKEN;
   if (!token) return null;
   return { token, baseUrl: process.env.SKYESCRAPER_API_URL ?? 'http://skyescraper-laravel.test/api' };

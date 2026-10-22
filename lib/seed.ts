@@ -1,5 +1,6 @@
 import type { GladosDb } from '@/lib/db';
 import { realAgents } from '@/lib/agents/real';
+import { skyAgentConfigured } from '@/lib/agents/sky-agents';
 import type { Agent, Department, Skill } from '@/lib/schemas';
 
 /**
@@ -63,39 +64,34 @@ export function seedDatabase(db: GladosDb): void {
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
- * Webhook-backed agents (n8n workflows) — ONE place per agent.
+ * Skyescraper agents (in-process LangGraph) — ONE place per agent.
  *
- * A webhook-backed agent's chat bypasses the built-in LLM gateway entirely
- * (lib/agents/chat.ts): the n8n workflow owns its own model, memory and
- * tools. This registry is what makes that agent show up correctly and
- * honestly everywhere in the app — /agents, /org, /chats, /blueprint,
- * /workflows and /skills — with zero further manual wiring.
+ * These agents run their own LangGraph tool-calling loop (lib/agents/sky-agents.ts)
+ * instead of this app's generic gateway path — their own system prompt, their
+ * own real tools against the Skyescraper API. This registry is what makes
+ * that agent show up correctly and honestly everywhere in the app — /agents,
+ * /org, /chats, /blueprint, /workflows and /skills — with zero further manual
+ * wiring. They used to be separately-hosted n8n workflows; moving them
+ * in-process meant one fewer always-on service to keep reachable when this
+ * app deploys anywhere other than localhost.
  *
  * TO ADD A NEW AGENT LIKE THIS:
  *   1. Add it to lib/agents/real.ts (RuntimeAgent: id, name, description,
- *      departmentId, configured(), run()).
- *   2. Build its n8n workflow with, at minimum:
- *        - a Chat Model node with an EXPLICIT model set (never leave the
- *          node's implicit default — see `model` below, which must match)
- *        - a Memory node (@n8n/n8n-nodes-langchain.memoryBufferWindow)
- *          wired via ai_memory, sessionKey = a fixed string unique to this
- *          agent (FounderOS keeps one rolling thread per agent, not per
- *          visitor, so one session key per agent is correct)
- *        - its read tool(s) and action tool(s)
- *   3. Add one entry below with its webhook env var, the real model string
- *      (as "provider/model", matching the Chat Model node), its tool slugs,
- *      and a skill (the SKILL.md-style playbook shown on /skills and in its
+ *      departmentId, configured: skyAgentConfigured, run()).
+ *   2. Add its system prompt and tools to SKY_AGENTS in lib/agents/sky-agents.ts
+ *      (new Skyescraper endpoints it needs go in lib/agents/skyescraper-api.ts).
+ *   3. Add one entry below with the real model string (as "provider/model",
+ *      matching lib/agents/langgraph-runner.ts's default), its tool slugs, and
+ *      a skill (the SKILL.md-style playbook shown on /skills and in its
  *      /agents sheet's "What it does" / "Connected to" sections).
- *   4. Add the env var itself to .env.local.
- *   5. Restart. syncWebhookAgents() + syncAgentWorkflows() + syncAgentSkills()
+ *   4. Restart. syncWebhookAgents() + syncAgentWorkflows() + syncAgentSkills()
  *      below do the rest on every process start — no other file to touch.
  * ──────────────────────────────────────────────────────────────────────── */
 
 type WebhookAgentConfig = {
-  webhookEnvVar: string;
-  /** "provider/model" — must match what the n8n Chat Model node actually
-   *  runs; this is informational (Blueprint/Org/Failover display), it does
-   *  not control n8n itself. Change the node too if you change this. */
+  /** "provider/model" — must match lib/agents/langgraph-runner.ts's actual
+   *  model; this is informational (Blueprint/Org/Failover display), it does
+   *  not control the LangGraph runner itself. Change both if you change this. */
   model: string;
   /** Real capabilities, shown as facts on /agents, /org and /blueprint. */
   tools: string[];
@@ -106,15 +102,14 @@ type WebhookAgentConfig = {
 
 const WEBHOOK_AGENTS: Record<string, WebhookAgentConfig> = {
   'lead-management': {
-    webhookEnvVar: 'SKYESCRAPER_N8N_LEAD_WEBHOOK',
     model: 'anthropic/claude-sonnet-5-5',
-    tools: ['mysql-readonly', 'skyescraper-api', 'memory'],
+    tools: ['skyescraper-api', 'memory'],
     memorySessionKey: 'lead-management-main',
     workflow: {
       name: 'Lead Management (Skyescraper)',
-      subtitle: 'Captures, scores and acts on real leads via an n8n workflow',
+      subtitle: 'Captures, scores and acts on real leads via an in-process LangGraph agent',
       detail:
-        'The Lead Management Agent reads live leads from the Skyescraper database and, on request, writes stage moves, agent assignments and activity log entries back through the Skyescraper API. Remembers the last 20 turns per conversation. Reachable from /chats.',
+        'The Lead Management Agent reads live leads from the Skyescraper API and, on request, writes stage moves, agent assignments and activity log entries back through the same API. One rolling conversation. Reachable from /chats.',
       order: 9000,
     },
     skill: {
@@ -124,13 +119,12 @@ const WEBHOOK_AGENTS: Record<string, WebhookAgentConfig> = {
       markdown: `# Skyescraper Lead Triage & Pipeline Actions
 
 **Owner:** Lead Management Agent
-**Model:** Claude Sonnet 5.5 (via the n8n AI Agent node)
-**Memory:** last 20 turns, one rolling conversation (session key \`lead-management-main\`)
+**Model:** Claude Sonnet 5.5 (via LangGraph's \`createReactAgent\`, over the AI Gateway)
+**Memory:** this app's own rolling conversation history (lib/agents/chat.ts), replayed on every turn
 
 ## What it does
-Reads real leads, stages, projects and units from the live Skyescraper MySQL
-database (read-only credential — it cannot write SQL directly), and can take
-three real actions through Skyescraper's own API:
+Reads real leads, stages and agents from the live Skyescraper API, and can
+take three real actions through that same API:
 
 - **Update Lead Stage** — move a lead to a different pipeline stage
 - **Assign Lead to Agent** — reassign a lead to a specific agent
@@ -139,13 +133,13 @@ three real actions through Skyescraper's own API:
 ## Tools
 | Tool | Kind | What it touches |
 |---|---|---|
-| Query Skyescraper DB (read-only) | Read | \`leads\`, \`lead_stages\`, \`projects\`, \`units\` |
-| Update Lead Stage | Write | \`POST /api/lead/update-stage\` |
-| Assign Lead to Agent | Write | \`POST /api/lead/agent-assign\` |
-| Log Lead Activity | Write | \`POST /api/lead/activity/save\` |
+| list_leads / list_lead_stages / list_agents | Read | \`POST /api/lead/listing\`, \`GET /api/lead_stage\`, \`POST /api/agent/team/listing\` |
+| update_lead_stage | Write | \`POST /api/lead/update-stage\` |
+| assign_lead_to_agent | Write | \`POST /api/lead/agent-assign\` |
+| log_lead_activity | Write | \`POST /api/lead/activity/save\` |
 
 ## Safety rules (enforced in its own system prompt)
-- Never guesses an id — always looks one up with the read tool first.
+- Never guesses an id — always looks one up with a read tool first.
 - Never claims an action succeeded unless the tool's own result confirms it.
 - All writes go through Skyescraper's real API, never a direct database write,
   so the app's own validation and permission checks always run.
@@ -158,44 +152,42 @@ three real actions through Skyescraper's own API:
     },
   },
   'property-inventory': {
-    webhookEnvVar: 'SKYESCRAPER_N8N_INVENTORY_WEBHOOK',
     model: 'anthropic/claude-sonnet-5-5',
-    tools: ['mysql-readonly', 'skyescraper-api', 'memory'],
+    tools: ['skyescraper-api', 'memory'],
     memorySessionKey: 'property-inventory-main',
     workflow: {
       name: 'Property Inventory (Skyescraper)',
-      subtitle: 'Reads and updates real unit and project status via an n8n workflow',
+      subtitle: 'Reads and updates real unit and project status via an in-process LangGraph agent',
       detail:
-        'The Property Inventory Agent reads live units and projects from the Skyescraper database and, on request, updates a unit’s availability (Available/Held/Sold) or publishes/archives a project through the Skyescraper API. Remembers the last 20 turns per conversation. Reachable from /chats.',
+        'The Property Inventory Agent reads live units and projects from the Skyescraper API and, on request, updates a unit’s status or publishes/archives a project through the same API. One rolling conversation. Reachable from /chats.',
       order: 9001,
     },
     skill: {
       name: 'Skyescraper Inventory Status Control',
       category: 'Sales',
-      description: 'Reads real Skyescraper inventory and can update unit availability and project publish status.',
+      description: 'Reads real Skyescraper inventory and can update unit status and project publish status.',
       markdown: `# Skyescraper Inventory Status Control
 
 **Owner:** Property Inventory Agent
-**Model:** Claude Sonnet 5.5 (via the n8n AI Agent node)
-**Memory:** last 20 turns, one rolling conversation (session key \`property-inventory-main\`)
+**Model:** Claude Sonnet 5.5 (via LangGraph's \`createReactAgent\`, over the AI Gateway)
+**Memory:** this app's own rolling conversation history (lib/agents/chat.ts), replayed on every turn
 
 ## What it does
-Reads real units and projects from the live Skyescraper MySQL database
-(read-only credential), and can take two real actions through Skyescraper's
-own API:
+Reads real projects and their unit sheets from the live Skyescraper API, and
+can take two real actions through that same API:
 
-- **Update Unit Status** — mark a unit Available, Held or Sold
+- **Update Unit Status** — set a unit to a real status id (Available/Held/Sold)
 - **Publish or Archive Project** — publish or archive a project listing
 
 ## Tools
 | Tool | Kind | What it touches |
 |---|---|---|
-| Query Skyescraper DB (read-only) | Read | \`units\`, \`unit_statuses\`, \`projects\` |
-| Update Unit Status | Write | \`POST /api/unit/status-update\` |
-| Publish or Archive Project | Write | \`POST /api/project/publish-toggle\` |
+| list_projects / list_units_for_project / list_unit_statuses | Read | \`POST /api/project/listing\`, \`POST /api/unit/listing\`, \`GET /api/unit-status\` |
+| update_unit_status | Write | \`POST /api/unit/status-update\` |
+| publish_toggle_project | Write | \`POST /api/project/publish-toggle\` |
 
 ## Safety rules (enforced in its own system prompt)
-- Never guesses an id — always looks one up with the read tool first.
+- Never guesses an id — always looks one up with a read tool first.
 - Never claims an action succeeded unless the tool's own result confirms it
   (this was caught failing once in testing when the Skyescraper server was
   briefly down, and fixed).
@@ -209,15 +201,14 @@ own API:
     },
   },
   'property-intelligence': {
-    webhookEnvVar: 'SKYESCRAPER_N8N_INTEL_WEBHOOK',
     model: 'anthropic/claude-sonnet-5-5',
-    tools: ['mysql-readonly', 'skyescraper-api', 'memory'],
+    tools: ['skyescraper-api', 'memory'],
     memorySessionKey: 'property-intelligence-main',
     workflow: {
       name: 'Property Intelligence (Skyescraper)',
-      subtitle: 'Summarises listings and writes real market/data-quality notes via an n8n workflow',
+      subtitle: 'Summarises listings and writes real market/data-quality notes via an in-process LangGraph agent',
       detail:
-        'The Property Intelligence Agent reads live projects, units and lead-interest counts from the Skyescraper database, and writes its findings — data-quality gaps, demand signals, market observations — as real project notes through the Skyescraper API. Remembers the last 20 turns per conversation. Reachable from /chats.',
+        'The Property Intelligence Agent reads live projects, units and leads from the Skyescraper API, and writes its findings — data-quality gaps, demand signals, market observations — as real project notes through the same API. One rolling conversation. Reachable from /chats.',
       order: 9002,
     },
     skill: {
@@ -227,24 +218,23 @@ own API:
       markdown: `# Skyescraper Listing Analysis & Notes
 
 **Owner:** Property Intelligence Agent
-**Model:** Claude Sonnet 5.5 (via the n8n AI Agent node)
-**Memory:** last 20 turns, one rolling conversation (session key \`property-intelligence-main\`)
+**Model:** Claude Sonnet 5.5 (via LangGraph's \`createReactAgent\`, over the AI Gateway)
+**Memory:** this app's own rolling conversation history (lib/agents/chat.ts), replayed on every turn
 
 ## What it does
-Reads real projects, units and lead-interest counts from the live Skyescraper
-MySQL database (read-only credential), and records what it finds —
-data-quality gaps, demand signals, market observations — as a real note on
-the project through Skyescraper's own API, rather than just saying it in chat
-and losing it.
+Reads real projects, units and leads from the live Skyescraper API, and
+records what it finds — data-quality gaps, demand signals, market
+observations — as a real note on the project through Skyescraper's own API,
+rather than just saying it in chat and losing it.
 
 ## Tools
 | Tool | Kind | What it touches |
 |---|---|---|
-| Query Skyescraper DB (read-only) | Read | \`projects\`, \`units\`, \`unit_statuses\`, \`leads\`, \`project_notes\` |
-| Add Project Note | Write | \`POST /api/project-notes/save\` |
+| list_projects / list_units_for_project / list_leads / list_project_notes | Read | \`POST /api/project/listing\`, \`POST /api/unit/listing\`, \`POST /api/lead/listing\`, \`POST /api/project-notes/listing\` |
+| add_project_note | Write | \`POST /api/project-notes/save\` |
 
 ## Safety rules (enforced in its own system prompt)
-- Never guesses an id — always looks one up with the read tool first.
+- Never guesses an id — always looks one up with a read tool first.
 - Never claims a note was saved unless the tool's own result confirms it (this
   genuinely failed once in testing — the \`project_notes\` table didn't exist
   in the database at all; fixed with a migration, re-tested, confirmed real).
@@ -253,20 +243,19 @@ and losing it.
 ## Example prompts
 - "Look at project 9. How many units does it have and how many leads are interested? Write a note with your findings."
 - "Compare the available units in projects 6 and 9."
-- "Flag any project where total_units doesn't match the actual unit records."
+- "List this project's existing notes before you add a new one."
 `,
     },
   },
   'client-care': {
-    webhookEnvVar: 'SKYESCRAPER_N8N_CARE_WEBHOOK',
     model: 'anthropic/claude-sonnet-5-5',
-    tools: ['mysql-readonly', 'skyescraper-api', 'memory'],
+    tools: ['skyescraper-api', 'memory'],
     memorySessionKey: 'client-care-main',
     workflow: {
       name: 'Client Care (Skyescraper)',
-      subtitle: 'Creates real follow-up reminders and lead notes via an n8n workflow',
+      subtitle: 'Creates real follow-up reminders and lead notes via an in-process LangGraph agent',
       detail:
-        'The Client Care Agent reads live leads and reminders from the Skyescraper database and, on request, creates a real follow-up reminder or attaches a note to a lead through the Skyescraper API. Remembers the last 20 turns per conversation. Reachable from /chats.',
+        'The Client Care Agent reads live leads, reminders and notes from the Skyescraper API and, on request, creates a real follow-up reminder or attaches a note to a lead through the same API. One rolling conversation. Reachable from /chats.',
       order: 9003,
     },
     skill: {
@@ -276,26 +265,25 @@ and losing it.
       markdown: `# Skyescraper Follow-up & Note Taking
 
 **Owner:** Client Care Agent
-**Model:** Claude Sonnet 5.5 (via the n8n AI Agent node)
-**Memory:** last 20 turns, one rolling conversation (session key \`client-care-main\`)
+**Model:** Claude Sonnet 5.5 (via LangGraph's \`createReactAgent\`, over the AI Gateway)
+**Memory:** this app's own rolling conversation history (lib/agents/chat.ts), replayed on every turn
 
 ## What it does
-Reads real leads and reminders from the live Skyescraper MySQL database
-(read-only credential), and can take two real actions through Skyescraper's
-own API:
+Reads real leads, reminders and notes from the live Skyescraper API, and can
+take two real actions through that same API:
 
-- **Create Follow-up Reminder** — schedule a reminder tied to a lead (call, site visit, follow-up, negotiation or other), with a priority
+- **Create Follow-up Reminder** — schedule a reminder tied to a lead, with a type and priority
 - **Add Lead Note** — attach a note to a lead
 
 ## Tools
 | Tool | Kind | What it touches |
 |---|---|---|
-| Query Skyescraper DB (read-only) | Read | \`leads\`, \`reminders\`, \`reminder_types\`, \`reminder_priorities\`, \`lead_notes\` |
-| Create Follow-up Reminder | Write | \`POST /api/reminder/save\` |
-| Add Lead Note | Write | \`POST /api/lead-notes/save\` |
+| list_leads / list_reminders / list_reminder_types / list_reminder_priorities / list_lead_notes | Read | \`POST /api/lead/listing\`, \`POST /api/reminder/listing\`, \`GET /api/reminder-type\`, \`GET /api/reminder-priority\`, \`POST /api/lead-notes/listing\` |
+| create_reminder | Write | \`POST /api/reminder/save\` |
+| add_lead_note | Write | \`POST /api/lead-notes/save\` |
 
 ## Safety rules (enforced in its own system prompt)
-- Never guesses a lead id — always looks one up with the read tool first.
+- Never guesses a lead id — always looks one up with a read tool first.
 - Never claims a reminder or note was saved unless the tool's own result confirms it.
 - All writes go through Skyescraper's real API, never a direct database write.
 
@@ -344,7 +332,10 @@ export function syncWebhookAgents(db: GladosDb): void {
     }
     const cfg = WEBHOOK_AGENTS[runtime.id];
     if (!cfg) continue;
-    db.agents.setWebhookUrl(runtime.id, process.env[cfg.webhookEnvVar] ?? null);
+    // webhookUrl is no longer how these agents are reached (lib/agents/sky-agents.ts
+    // runs them in-process) — always cleared here so a stale n8n URL from
+    // before this migration can never linger and get used by mistake.
+    db.agents.setWebhookUrl(runtime.id, null);
     db.agents.setTools(runtime.id, cfg.tools);
     db.agents.setModel(runtime.id, cfg.model);
   }
@@ -352,16 +343,17 @@ export function syncWebhookAgents(db: GladosDb): void {
 
 
 /**
- * One /workflows canvas entry per webhook-backed agent, so the automation it
+ * One /workflows canvas entry per Skyescraper agent, so the automation it
  * runs is visible there too, not just on /agents and /chats. Idempotent by id
  * (INSERT OR REPLACE), so re-running on every start never duplicates it; the
  * one-time version-history write (lib/db.ts workflows.insert) still records a
  * version, same as any other workflow save. Honest or absent: only synced
- * when that agent's webhook env var is actually set.
+ * while the agent's real credentials (Skyescraper token + AI Gateway key) are
+ * actually configured.
  */
 export function syncAgentWorkflows(db: GladosDb): void {
+  if (!skyAgentConfigured()) return;
   for (const [agentId, cfg] of Object.entries(WEBHOOK_AGENTS)) {
-    if (!process.env[cfg.webhookEnvVar]) continue;
     const agent = db.agents.get(agentId);
     const id = `wf-${agentId}`;
     db.workflows.insert(
@@ -382,7 +374,7 @@ export function syncAgentWorkflows(db: GladosDb): void {
             tools: cfg.tools,
             edgeLabel: null,
             leakUsd: null,
-            automation: { title: `n8n workflow (${cfg.model.split('/')[1] ?? cfg.model} + MySQL + Skyescraper API)`, state: 'live', recoveredUsd: 0 },
+            automation: { title: `LangGraph agent (${cfg.model.split('/')[1] ?? cfg.model} + Skyescraper API)`, state: 'live', recoveredUsd: 0 },
             branch: null,
             ownerAgentId: agentId,
             kind: 'agent',
@@ -398,18 +390,18 @@ export function syncAgentWorkflows(db: GladosDb): void {
 }
 
 /**
- * One /skills entry per webhook-backed agent: the SKILL.md-style playbook
+ * One /skills entry per Skyescraper agent: the SKILL.md-style playbook
  * that documents what it actually does, its real tools, and its safety
  * rules. This is also what lights up an agent's "What it does" and
  * "Connected to" sections in its /agents detail sheet (app/agents/panel-data.ts
  * reads db.skills.filter(s => s.ownerAgentId === agent.id)). Honest or
- * absent: only synced while that agent's webhook is actually configured.
+ * absent: only synced while the agent's real credentials are configured.
  */
 export function syncAgentSkills(db: GladosDb): void {
+  if (!skyAgentConfigured()) return;
   let order = 900;
   for (const [agentId, cfg] of Object.entries(WEBHOOK_AGENTS)) {
     const id = `skill-${agentId}`;
-    if (!process.env[cfg.webhookEnvVar]) continue;
     const skill: Skill = {
       id,
       name: cfg.skill.name,
