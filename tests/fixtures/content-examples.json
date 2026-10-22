@@ -1,0 +1,14 @@
+{
+  "examples": [
+    { "id": "ex-build", "title": "Building a tool on their API", "url": "https://example.com/p/build", "platform": "instagram", "brand": null, "angle": "tool-build", "format": "screen-recording", "hookType": null, "requires": ["api"], "ctaMechanism": "manychat", "manychatFlows": ["Flow A"], "clearance": "public", "notes": "A live build against a public API.", "analysisSource": "operator", "createdAt": "2026-09-01" },
+    { "id": "ex-ad", "title": "A paid read", "url": "https://example.com/p/ad", "platform": "instagram", "brand": "Sample Co", "angle": "paid-ad", "format": "talking-head", "hookType": null, "requires": [], "ctaMechanism": "link-in-bio", "manychatFlows": [], "clearance": "public", "notes": "Works for any brand.", "analysisSource": "operator", "createdAt": "2026-09-02" },
+    { "id": "ex-demo", "title": "Walking the product", "url": "https://example.com/p/demo", "platform": "youtube", "brand": null, "angle": "feature-demo", "format": "screen-recording", "hookType": null, "requires": ["web-app"], "ctaMechanism": "none", "manychatFlows": [], "clearance": "public", "notes": "Needs a UI to record.", "analysisSource": "pending", "createdAt": "2026-09-03" }
+  ],
+  "manychatRuns": [
+    { "id": "mc-a", "name": "Flow A", "status": "live", "runs": 1000, "ctrPct": 50, "triggerKeyword": "TOOL", "ageLabel": "2 weeks", "screenshot": "flow-a.png" },
+    { "id": "mc-b", "name": "Flow B", "status": "stopped", "runs": 100, "ctrPct": 80, "triggerKeyword": "DEMO", "ageLabel": "1 month", "screenshot": "flow-b.png" }
+  ],
+  "sends": [
+    { "id": "send-1", "sentAt": "2026-09-10", "brand": "Acme", "recipient": "partners@example.com", "channel": "email", "dealId": null, "threadId": null, "exampleIds": ["ex-build", "ex-ad"], "manychatRunIds": ["mc-a"], "note": "First outreach." }
+  ]
+}

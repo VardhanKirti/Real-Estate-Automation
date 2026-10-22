@@ -1,0 +1,1081 @@
+{
+  "syncedAt": "2026-09-02T13:45:00-07:00",
+  "source": "higgsfield models_explore (operator sync)",
+  "models": [
+    {
+      "id": "nano_banana_pro",
+      "name": "Nano Banana Pro",
+      "provider": "Google",
+      "description": "Ultimate quality, text and diagrams",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k", "4k"], "default": "2k", "description": "Output resolution" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "3:2", "2:3", "4:3", "3:4", "4:5", "5:4", "9:16", "16:9", "21:9"],
+      "unlim": true
+    },
+    {
+      "id": "nano_banana_2",
+      "name": "Nano Banana 2",
+      "provider": "Google",
+      "description": "Fast, next-gen high-quality images",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k", "4k"], "default": "1k", "description": "Output resolution" },
+        { "name": "is_inpaint", "type": "bool", "default": false, "description": "Restrict the edit to the supplied mask" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }, { "role": "mask", "type": "image" }],
+      "aspectRatios": ["auto", "1:1", "3:2", "2:3", "4:3", "3:4", "4:5", "5:4", "9:16", "16:9", "21:9"],
+      "unlim": true
+    },
+    {
+      "id": "nano_banana_2_lite",
+      "name": "Nano Banana 2 Lite",
+      "provider": "Google",
+      "description": "Lite next-gen high-quality images",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k"], "default": "1k", "description": "Output resolution" },
+        { "name": "thinking", "type": "string", "options": ["MINIMAL", "HIGH"], "default": "HIGH", "description": "Depth of internal reasoning before generation" },
+        { "name": "is_inpaint", "type": "bool", "default": false, "description": "Restrict the edit to the supplied mask" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }, { "role": "mask", "type": "image" }],
+      "aspectRatios": ["auto", "1:1", "3:2", "2:3", "4:3", "3:4", "4:5", "5:4", "9:16", "16:9", "21:9"],
+      "unlim": false
+    },
+    {
+      "id": "nano_banana",
+      "name": "Nano Banana",
+      "provider": "Google",
+      "description": "Realistic images, budget-friendly",
+      "output": "image",
+      "family": "image",
+      "parameters": [],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "3:2", "2:3", "4:3", "3:4", "4:5", "5:4", "9:16", "16:9", "21:9"],
+      "unlim": true
+    },
+    {
+      "id": "soul_2",
+      "name": "Higgsfield Soul 2.0",
+      "provider": "Higgsfield",
+      "description": "Realistic UGC, fashion editorial and character generation",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "quality", "type": "string", "options": ["1.5k", "2k"], "default": "2k", "description": "Output quality tier" },
+        { "name": "soul_id", "type": "string", "description": "Soul character id for personalized generation" }
+      ],
+      "medias": [{ "role": "image", "type": "image", "max": 1 }],
+      "aspectRatios": ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
+      "unlim": true
+    },
+    {
+      "id": "soul_cinematic",
+      "name": "Soul Cinema",
+      "provider": "Higgsfield",
+      "description": "Cinema-grade stills and concept art",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "quality", "type": "string", "options": ["1.5k", "2k"], "default": "2k", "description": "Output quality tier" },
+        { "name": "soul_id", "type": "string", "description": "Soul Cinema character id for personalized cinematic generation" }
+      ],
+      "medias": [{ "role": "image", "type": "image", "max": 1 }],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
+      "unlim": false
+    },
+    {
+      "id": "soul_location",
+      "name": "Soul Location",
+      "provider": "Higgsfield",
+      "description": "Environment and location generation",
+      "output": "image",
+      "family": "image",
+      "parameters": [],
+      "medias": [],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9", "9:21"],
+      "unlim": false
+    },
+    {
+      "id": "gpt_image_2",
+      "name": "GPT Image 2",
+      "provider": "OpenAI",
+      "description": "Next-gen GPT Image with 1k/2k/4k resolution and quality tiers",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k", "4k"], "default": "1k", "description": "Output resolution" },
+        { "name": "quality", "type": "string", "options": ["low", "medium", "high"], "default": "low", "description": "Image quality" }
+      ],
+      "medias": [{ "role": "image", "type": "image" }],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "21:9", "9:16", "3:2", "2:3"],
+      "unlim": true
+    },
+    {
+      "id": "openai_hazel",
+      "name": "OpenAI Hazel",
+      "provider": "OpenAI",
+      "description": "Powerful editing, best text rendering",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "quality", "type": "string", "options": ["low", "medium", "high"], "default": "medium", "description": "Rendering quality / detail level" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "3:2", "2:3", "auto"],
+      "unlim": false
+    },
+    {
+      "id": "cinematic_studio_2_5",
+      "name": "Cinema Studio Image 2.5",
+      "provider": "Higgsfield",
+      "description": "Cinematic stills, up to 4K resolution",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k", "4k"], "default": "1k", "description": "Output resolution" }
+      ],
+      "medias": [{ "role": "image", "type": "image" }],
+      "aspectRatios": ["1:1", "3:2", "2:3", "4:3", "3:4", "4:5", "5:4", "16:9", "9:16", "21:9"],
+      "unlim": false
+    },
+    {
+      "id": "seedream_v4_5",
+      "name": "Seedream 4.5",
+      "provider": "Bytedance",
+      "description": "4K output, precise control, transformations",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "quality", "type": "string", "options": ["basic", "high"], "default": "basic", "description": "basic renders up to 4K, high up to ~6K" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "4:3", "16:9", "3:2", "21:9", "3:4", "9:16", "2:3"],
+      "unlim": true
+    },
+    {
+      "id": "seedream_v5_lite",
+      "name": "Seedream 5.0 Lite",
+      "provider": "Bytedance",
+      "description": "Visual reasoning, instruction-based editing",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "quality", "type": "string", "options": ["basic", "high"], "default": "basic", "description": "Output quality tier" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "9:16", "21:9"],
+      "unlim": true
+    },
+    {
+      "id": "seedream_v5_pro",
+      "name": "Seedream 5.0 Pro",
+      "provider": "Bytedance",
+      "description": "Pro-tier visual reasoning, instruction-based editing, up to 2K",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "1.5k", "2k"], "default": "2k", "description": "Output resolution tier" },
+        { "name": "remove_bg", "type": "bool", "default": false, "description": "Remove the background from the generated image" },
+        { "name": "is_inpaint", "type": "bool", "default": false, "description": "Treat as inpaint/edit of the reference image(s)" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
+      "unlim": true
+    },
+    {
+      "id": "flux_2",
+      "name": "FLUX.2",
+      "provider": "Black Forest Labs",
+      "description": "Pro/flex/max variants, precise prompt adherence",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k"], "default": "1k", "description": "Output resolution" },
+        { "name": "variant", "type": "string", "options": ["pro", "flex", "max"], "default": "pro", "description": "FLUX.2 model variant" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "9:16"],
+      "unlim": true
+    },
+    {
+      "id": "flux_kontext",
+      "name": "Flux Kontext",
+      "provider": "Black Forest Labs",
+      "description": "Context-aware editing and style transfer",
+      "output": "image",
+      "family": "image",
+      "parameters": [],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "kling_omni_image",
+      "name": "Kling O1 Image",
+      "provider": "Kling",
+      "description": "Versatile photorealistic generation",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k"], "default": "1k", "description": "Output resolution" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "auto", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3", "21:9"],
+      "unlim": true
+    },
+    {
+      "id": "grok_image",
+      "name": "Grok Image",
+      "provider": "xAI",
+      "description": "Expressive, high-contrast generation and editing",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k"], "default": "1k", "description": "Output resolution" },
+        { "name": "mode", "type": "string", "options": ["std", "quality"], "default": "std", "description": "Standard or higher-fidelity mode" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "auto", "1:2", "2:1", "3:2", "2:3", "4:3", "3:4", "16:9", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "grok_image_2_0",
+      "name": "Grok Image 2.0",
+      "provider": "xAI",
+      "description": "Next-generation image creation and editing from xAI",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k"], "default": "1k", "description": "Output resolution" },
+        { "name": "quality", "type": "string", "options": ["low", "medium"], "default": "medium", "description": "Generation quality level" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["1:1", "auto", "1:2", "2:1", "3:2", "2:3", "4:3", "3:4", "16:9", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "recraft_v4_1",
+      "name": "Recraft V4.1",
+      "provider": "Recraft",
+      "description": "Standard, vector logo/icon, and utility product-shot variants with palette control",
+      "output": "image",
+      "family": "image",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k"], "default": "1k", "description": "Output resolution" },
+        { "name": "model_type", "type": "string", "options": ["standard", "vector", "utility", "utility_vector"], "default": "standard", "description": "standard = expressive; vector = logos/icons/SVG-like; utility = clean product shots; utility_vector = both" },
+        { "name": "colors", "type": "string_array", "description": "Optional color palette, up to 10 #RRGGBB colors" },
+        { "name": "background_color", "type": "string", "description": "Optional #RRGGBB background color" }
+      ],
+      "medias": [],
+      "aspectRatios": ["1:1", "3:4", "4:3", "4:5", "5:4", "3:2", "2:3", "16:9", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "z_image",
+      "name": "Z Image",
+      "provider": "Tongyi-MAI",
+      "description": "Super fast, stylized text-to-image",
+      "output": "image",
+      "family": "image",
+      "parameters": [],
+      "medias": [],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "image_auto",
+      "name": "Auto",
+      "provider": "Higgsfield",
+      "description": "Auto-selects the best image model based on prompt intent",
+      "output": "image",
+      "family": "image",
+      "parameters": [],
+      "medias": [{ "role": "image", "type": "image" }],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "9:16"],
+      "unlim": false
+    },
+
+    {
+      "id": "kling3_0",
+      "name": "Kling v3.0",
+      "provider": "Kling",
+      "description": "Multi-shot, audio sync, motion transfer",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": 3, "max": 15, "default": 5, "description": "Duration in seconds" },
+        { "name": "mode", "type": "string", "options": ["std", "pro", "4k"], "default": "std", "description": "Standard, higher quality, or 4K" },
+        { "name": "sound", "type": "string", "options": ["on", "off"], "default": "on", "description": "Generate audio; off is silent and cheaper" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }],
+      "aspectRatios": ["16:9", "9:16", "1:1"],
+      "unlim": true
+    },
+    {
+      "id": "kling3_0_turbo",
+      "name": "Kling 3.0 Turbo",
+      "provider": "Kling",
+      "description": "Fast text-to-video and single start-frame animation",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["720p", "1080p"], "default": "720p", "description": "Output resolution" },
+        { "name": "duration", "type": "number", "min": 3, "max": 15, "default": 5, "description": "Duration in seconds" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }],
+      "aspectRatios": ["16:9", "9:16", "1:1"],
+      "unlim": false
+    },
+    {
+      "id": "kling2_6",
+      "name": "Kling 2.6 Video",
+      "provider": "Kling",
+      "description": "Cinematic motion, advanced physics",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "options": [5, 10], "default": 5, "description": "Duration in seconds" },
+        { "name": "sound", "type": "bool", "default": true, "description": "Generate the video with native audio" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }],
+      "aspectRatios": ["16:9", "9:16", "1:1"],
+      "unlim": false
+    },
+    {
+      "id": "veo3_1",
+      "name": "Google Veo 3.1",
+      "provider": "Google",
+      "description": "Ultra-realistic, top-tier cinematic quality",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "options": [4, 6, 8], "default": 8, "description": "Duration in seconds" },
+        { "name": "quality", "type": "string", "options": ["basic", "high", "ultra"], "default": "basic", "description": "Output quality tier" },
+        { "name": "variant", "type": "string", "options": ["veo-3-1-preview", "veo-3-1-fast"], "default": "veo-3-1-fast", "description": "preview = best quality, fast = faster generation" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }],
+      "aspectRatios": ["16:9", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "veo3_1_lite",
+      "name": "Google Veo 3.1 Lite",
+      "provider": "Google",
+      "description": "Fast, affordable, budget batch clips",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "options": [4, 6, 8], "default": 8, "description": "Duration in seconds" },
+        { "name": "generate_audio", "type": "bool", "default": false, "description": "Generate native audio (adds cost)" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }],
+      "aspectRatios": ["16:9", "9:16", "auto"],
+      "unlim": false
+    },
+    {
+      "id": "veo3",
+      "name": "Google Veo 3",
+      "provider": "Google",
+      "description": "Reliable cinematic, broad creative range",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "variant", "type": "string", "options": ["veo-3-preview", "veo-3-fast"], "default": "veo-3-fast", "description": "preview = best quality, fast = faster generation" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }],
+      "aspectRatios": ["16:9", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "cinematic_studio_3_0",
+      "name": "Cinema Studio Video 3.0",
+      "provider": "Higgsfield",
+      "description": "Most advanced cinema-grade model",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p", "4k"], "default": "720p", "description": "Output resolution (higher = more credits)" },
+        { "name": "genre", "type": "string", "options": ["auto", "action", "horror", "comedy", "noir", "drama", "epic"], "default": "auto", "description": "Cinematic genre hint" },
+        { "name": "generate_audio", "type": "bool", "default": false, "description": "Generate audio for the video" }
+      ],
+      "medias": [{ "role": "image", "type": "image" }, { "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }],
+      "aspectRatios": ["auto", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"],
+      "durationRange": { "min": 4, "max": 15 },
+      "unlim": false
+    },
+    {
+      "id": "cinematic_studio_video_v2",
+      "name": "Cinema Studio Video 2",
+      "provider": "Higgsfield",
+      "description": "Refined cinematic camera and color, genre control",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "genre", "type": "string", "options": ["auto", "action", "horror", "comedy", "western", "suspense", "intimate", "spectacle"], "default": "auto", "description": "Video genre/style" },
+        { "name": "mode", "type": "string", "options": ["pro", "std"], "default": "std", "description": "Quality mode" },
+        { "name": "sound", "type": "string", "options": ["on", "off"], "default": "on", "description": "Generate audio; off is silent" },
+        { "name": "speedramp", "type": "string", "options": ["auto", "custom", "linear", "slowmo", "speedup", "impact"], "default": "auto", "description": "Speed-ramp time effect" },
+        { "name": "multi_shots", "type": "bool", "default": false, "description": "Split the video into multiple shots" },
+        { "name": "cfg_scale", "type": "number", "min": 0, "max": 1, "default": 0.5, "description": "Prompt adherence strength" },
+        { "name": "preset_id", "type": "string", "description": "Preset id from the presets catalog" }
+      ],
+      "medias": [{ "role": "image", "type": "image" }, { "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }],
+      "aspectRatios": ["1:1", "4:3", "3:4", "16:9", "9:16"],
+      "durationRange": { "min": 3, "max": 12 },
+      "unlim": false
+    },
+    {
+      "id": "seedance_2_5",
+      "name": "Seedance 2.5",
+      "provider": "Bytedance",
+      "description": "Text-to-video, omni-reference generation, video edit and extension",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "mode", "type": "string", "options": ["t2v", "omni_reference", "video_edit", "video_extension"], "default": "t2v", "description": "t2v = prompt only; omni_reference = image/video/audio refs; video_edit = edit a reference video; video_extension = extend it" },
+        { "name": "duration", "type": "number", "min": 4, "max": 30, "default": 5, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p"], "default": "720p", "description": "Output resolution" },
+        { "name": "generate_audio", "type": "bool", "default": true, "description": "Generate audio for the output video" },
+        { "name": "bitrate_mode", "type": "string", "options": ["standard", "high"], "default": "standard", "description": "Output bitrate" },
+        { "name": "extension_mode", "type": "string", "options": ["backward", "forward"], "description": "Extension direction (video_extension mode only)" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["auto", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "seedance_2_0",
+      "name": "Seedance 2.0",
+      "provider": "Bytedance",
+      "description": "Reference-driven video, consistent identity, native audio",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": 4, "max": 15, "default": 5, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p", "4k"], "default": "720p", "description": "4k/1080p require std mode" },
+        { "name": "mode", "type": "string", "options": ["std", "fast"], "default": "std", "description": "std = higher quality; fast = cheaper, 480p/720p only" },
+        { "name": "bitrate_mode", "type": "string", "options": ["standard", "high"], "default": "standard", "description": "Output bitrate" },
+        { "name": "genre", "type": "string", "options": ["auto", "action", "horror", "comedy", "noir", "drama", "epic"], "default": "auto", "description": "Cinematic genre hint" },
+        { "name": "generate_audio", "type": "bool", "default": true, "description": "Generate native audio" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["auto", "16:9", "9:16", "4:3", "3:4", "1:1", "21:9"],
+      "unlim": true
+    },
+    {
+      "id": "seedance_2_0_mini",
+      "name": "Seedance 2.0 Mini",
+      "provider": "Bytedance",
+      "description": "Fast budget Seedance with reference inputs and native audio",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": 4, "max": 15, "default": 5, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["480p", "720p"], "default": "720p", "description": "Output resolution" },
+        { "name": "bitrate_mode", "type": "string", "options": ["standard", "high"], "default": "standard", "description": "Output bitrate" },
+        { "name": "genre", "type": "string", "options": ["auto", "action", "horror", "comedy", "noir", "drama", "epic"], "default": "auto", "description": "Cinematic genre hint" },
+        { "name": "generate_audio", "type": "bool", "default": true, "description": "Generate native audio" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["auto", "16:9", "9:16", "4:3", "3:4", "1:1", "21:9"],
+      "unlim": true
+    },
+    {
+      "id": "seedance1_5",
+      "name": "Seedance 1.5 Pro",
+      "provider": "Bytedance",
+      "description": "Reliable motion, improved quality",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "options": [4, 8, 12], "default": 4, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p"], "default": "720p", "description": "Output resolution" },
+        { "name": "generate_audio", "type": "bool", "default": true, "description": "Generate native audio" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }],
+      "aspectRatios": ["auto", "16:9", "9:16", "4:3", "3:4", "1:1", "21:9"],
+      "unlim": false
+    },
+    {
+      "id": "wan3_0",
+      "name": "Wan 3.0",
+      "provider": "Wan",
+      "description": "Text-to-video, first/last frame, multimodal references, native audio",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": -1, "max": 30, "default": 5, "description": "Seconds, or -1 for smart duration (billed as 10s)" },
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p"], "default": "720p", "description": "Output resolution" },
+        { "name": "generate_audio", "type": "bool", "default": true, "description": "Generate a native audio track" },
+        { "name": "enable_thinking", "type": "bool", "default": false, "description": "Reason about the prompt first (slower, better adherence)" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["auto", "16:9", "9:16", "1:1", "4:3", "3:4"],
+      "unlim": false
+    },
+    {
+      "id": "wan3_0_prime",
+      "name": "Wan 3.0 Prime",
+      "provider": "Wan",
+      "description": "Prime tier of Wan 3.0 with the same multimodal surface",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": -1, "max": 30, "default": 5, "description": "Seconds, or -1 for smart duration (billed as 10s)" },
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p"], "default": "720p", "description": "Output resolution" },
+        { "name": "generate_audio", "type": "bool", "default": true, "description": "Generate a native audio track" },
+        { "name": "enable_thinking", "type": "bool", "default": false, "description": "Reason about the prompt first (slower, better adherence)" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["auto", "16:9", "9:16", "1:1", "4:3", "3:4"],
+      "unlim": false
+    },
+    {
+      "id": "wan2_7",
+      "name": "Wan 2.7",
+      "provider": "Wan",
+      "description": "Synchronized audio, character-consistent video",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": 2, "max": 15, "default": 5, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["720p", "1080p"], "default": "720p", "description": "Output resolution" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["16:9", "9:16", "1:1", "4:3", "3:4"],
+      "unlim": true
+    },
+    {
+      "id": "wan2_6",
+      "name": "Wan 2.6 Video",
+      "provider": "Wan",
+      "description": "Open-weight, stylized, experimental creative",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "quality", "type": "string", "options": ["720p", "1080p"], "default": "720p", "description": "Output resolution / quality" },
+        { "name": "duration", "type": "number", "options": [5, 10, 15], "default": 5, "description": "Duration in seconds" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["16:9", "9:16", "1:1"],
+      "unlim": false
+    },
+    {
+      "id": "minimax_h3",
+      "name": "MiniMax H3",
+      "provider": "MiniMax",
+      "description": "Multimodal video with keyframes or image/video/audio references",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": 4, "max": 15, "default": 5, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["2K"], "default": "2K", "description": "Output resolution" },
+        { "name": "batch_size", "type": "number", "min": 1, "max": 4, "default": 1, "description": "Number of videos to generate" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["auto", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "minimax_h3_max",
+      "name": "MiniMax H3 Max",
+      "provider": "MiniMax",
+      "description": "Fast text-to-video, keyframe, and multimodal-reference generation",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": 5, "max": 15, "default": 5, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["480p", "768p"], "default": "768p", "description": "Output resolution" },
+        { "name": "batch_size", "type": "number", "min": 1, "max": 4, "default": 1, "description": "Number of videos to generate" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["auto", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "minimax_hailuo",
+      "name": "Minimax Hailuo",
+      "provider": "Hailuo",
+      "description": "Natural physics, facial emotion, multiple variants",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "variant", "type": "string", "options": ["minimax", "minimax-fast", "minimax-2.3", "minimax-2.3-fast"], "default": "minimax-2.3", "description": "Model variant" },
+        { "name": "duration", "type": "number", "options": [6, 10], "default": 6, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["512", "768", "1080"], "default": "768", "description": "512 incompatible with end frame and 2.3 variants" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "flux_3_video",
+      "name": "FLUX 3 Video",
+      "provider": "Black Forest Labs",
+      "description": "Text-to-video, multi-frame image-to-video, continuation, synced audio",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": 5, "max": 20, "default": 5, "description": "Duration in whole seconds" },
+        { "name": "resolution", "type": "string", "options": ["720p", "1080p"], "default": "720p", "description": "Output resolution" },
+        { "name": "generate_audio", "type": "bool", "default": true, "description": "Generate synchronized speech, effects, ambience" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }],
+      "aspectRatios": ["auto", "21:9", "2:1", "16:9", "4:3", "1:1", "3:4", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "gemini_omni",
+      "name": "Gemini Omni Flash",
+      "provider": "Google",
+      "description": "Reference-driven video with native audio",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": 4, "max": 10, "default": 8, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["720p"], "default": "720p", "description": "Output resolution" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }],
+      "aspectRatios": ["16:9", "9:16"],
+      "unlim": true
+    },
+    {
+      "id": "gemini_omni_flash_1_1",
+      "name": "Gemini Omni Flash 1.1",
+      "provider": "Google",
+      "description": "Text-to-video, keyframes, references, and video editing with native audio",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "mode", "type": "string", "required": true, "options": ["text-to-video", "image-to-video", "reference-to-video", "edit"], "description": "Generation mode" },
+        { "name": "duration", "type": "number", "min": 3, "max": 10, "default": 8, "description": "Seconds (edit mode uses source duration, capped 30s)" },
+        { "name": "resolution", "type": "string", "options": ["360p", "720p", "1080p", "4k"], "default": "720p", "description": "Output resolution" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }],
+      "aspectRatios": ["16:9", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "grok_video_v15",
+      "name": "Grok Video 1.5",
+      "provider": "xAI",
+      "description": "Multimodal video from text, a start image, or image and audio references",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p"], "default": "720p", "description": "Output resolution" },
+        { "name": "duration", "type": "number", "min": 2, "max": 15, "default": 5, "description": "Duration in seconds" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "grok_video",
+      "name": "Grok Video",
+      "provider": "xAI",
+      "description": "Text and image-to-video, audio support",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "duration", "type": "number", "min": 1, "max": 15, "default": 5, "description": "Duration in seconds" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }],
+      "aspectRatios": ["16:9", "9:16", "1:1"],
+      "unlim": false
+    },
+    {
+      "id": "happy_horse_video",
+      "name": "Happy Horse Video",
+      "provider": "Happy Horse",
+      "description": "Text-to-video and single start-frame animation",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["720p", "1080p"], "default": "720p", "description": "Output resolution" },
+        { "name": "duration", "type": "number", "min": 3, "max": 15, "default": 5, "description": "Duration in seconds" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }],
+      "aspectRatios": ["16:9", "9:16", "1:1", "4:3", "3:4"],
+      "unlim": false
+    },
+    {
+      "id": "higgsfield_preset",
+      "name": "Higgsfield Preset",
+      "provider": "Higgsfield",
+      "description": "Preset-routed image-to-video using named viral presets",
+      "output": "video",
+      "family": "video",
+      "parameters": [
+        { "name": "preset_id", "type": "string", "required": true, "description": "Preset id from the presets catalog" }
+      ],
+      "medias": [{ "role": "image", "type": "image", "max": 1, "required": true }],
+      "aspectRatios": ["16:9", "9:16", "1:1"],
+      "unlim": false
+    },
+
+    {
+      "id": "clipify",
+      "name": "Personal Clipper",
+      "provider": "Higgsfield",
+      "description": "Turn one YouTube video into ready-to-share clips with subtitles",
+      "output": "video",
+      "family": "clips",
+      "parameters": [
+        { "name": "urls", "type": "string_array", "required": true, "max": 1, "description": "Exactly one YouTube URL" },
+        { "name": "clips_num", "type": "number", "min": 1, "max": 20, "default": 10, "description": "How many clips to create" },
+        { "name": "clip_aspect", "type": "string", "options": ["9:16", "1:1", "16:9"], "default": "9:16", "description": "Clip aspect ratio" },
+        { "name": "subtitle_highlight_hex", "type": "string", "default": "#FFE84D", "description": "Subtitle highlight color as #RRGGBB" },
+        { "name": "subtitle_position", "type": "string", "options": ["bottom", "center", "top"], "default": "bottom", "description": "Subtitle vertical position" },
+        { "name": "subtitle_font", "type": "string", "options": ["notosans", "notoserif", "notosansdisplay", "ibmplexsans", "mplusrounded1c", "bebasneue", "archivoblack", "unbounded", "inter", "montserrat", "bangers", "permanentmarker", "playfairdisplay", "caveat"], "default": "notosans", "description": "Subtitle font" },
+        { "name": "subtitle_case", "type": "string", "options": ["upper", "lower", "as-is"], "default": "as-is", "description": "Subtitle text case" },
+        { "name": "track_face_crop", "type": "bool", "default": true, "description": "Track faces when cropping clips" },
+        { "name": "max_height", "type": "number", "min": 144, "max": 2160, "default": 1080, "description": "Maximum source processing height" },
+        { "name": "segment_seconds", "type": "number", "min": 2, "max": 60, "default": 10, "description": "Segment duration in seconds" }
+      ],
+      "medias": [],
+      "aspectRatios": [],
+      "unlim": false
+    },
+
+    {
+      "id": "topaz_image",
+      "name": "Topaz Image Enhance",
+      "provider": "Topaz",
+      "description": "Precision image enhancement and upscale",
+      "output": "image",
+      "family": "enhance",
+      "parameters": [
+        { "name": "output_width", "type": "number", "required": true, "min": 1, "description": "Target output width in pixels" },
+        { "name": "output_height", "type": "number", "required": true, "min": 1, "description": "Target output height in pixels" },
+        { "name": "variant", "type": "string", "options": ["Standard V2", "Low Resolution V2", "CGI", "High Fidelity V2", "Text Refine"], "default": "Standard V2", "description": "Topaz enhancement model" },
+        { "name": "sharpen", "type": "number", "min": 0, "max": 1, "default": 0, "description": "Sharpening amount" },
+        { "name": "denoise", "type": "number", "min": 0, "max": 1, "default": 0, "description": "Denoising amount" },
+        { "name": "face_enhancement", "type": "bool", "default": false, "description": "Enable dedicated face enhancement" },
+        { "name": "face_enhancement_creativity", "type": "number", "min": 0, "max": 1, "default": 0, "description": "Face enhancement creativity" },
+        { "name": "face_enhancement_strength", "type": "number", "min": 0, "max": 1, "default": 0, "description": "Face enhancement strength" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "topaz_image_generative",
+      "name": "Topaz Generative Upscale",
+      "provider": "Topaz",
+      "description": "Generative image upscale with creativity and texture control",
+      "output": "image",
+      "family": "enhance",
+      "parameters": [
+        { "name": "output_width", "type": "number", "required": true, "min": 1, "description": "Target output width in pixels" },
+        { "name": "output_height", "type": "number", "required": true, "min": 1, "description": "Target output height in pixels" },
+        { "name": "variant", "type": "string", "options": ["Standard MAX", "Redefine", "Recovery", "Recovery V2"], "default": "Redefine", "description": "Generative upscale variant" },
+        { "name": "autoprompt", "type": "bool", "default": true, "description": "Auto-generate a guiding prompt from the image" },
+        { "name": "creativity", "type": "number", "min": 1, "max": 6, "default": 1, "description": "Creativity level; higher adds more detail" },
+        { "name": "texture", "type": "number", "min": 1, "max": 5, "default": 1, "description": "Texture strength" },
+        { "name": "sharpen", "type": "number", "min": 0, "max": 1, "default": 0, "description": "Sharpening amount" },
+        { "name": "denoise", "type": "number", "min": 0, "max": 1, "default": 0, "description": "Denoising amount" },
+        { "name": "face_enhancement", "type": "bool", "default": false, "description": "Enable face enhancement" },
+        { "name": "face_enhancement_creativity", "type": "number", "min": 0, "max": 1, "default": 0, "description": "Face enhancement creativity" },
+        { "name": "face_enhancement_strength", "type": "number", "min": 0, "max": 1, "default": 0, "description": "Face enhancement strength" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "bytedance_image_upscale",
+      "name": "Bytedance Image Upscale",
+      "provider": "Bytedance",
+      "description": "Fast image upscale to 2K or 4K",
+      "output": "image",
+      "family": "enhance",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["2k", "4k"], "default": "4k", "description": "Target upscale resolution" },
+        { "name": "remove_bg", "type": "bool", "default": false, "description": "Remove the background from the upscaled image" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "image_background_remover",
+      "name": "Background Remover",
+      "provider": "Higgsfield",
+      "description": "Remove the background from an image",
+      "output": "image",
+      "family": "enhance",
+      "parameters": [],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "outpaint",
+      "name": "Outpaint",
+      "provider": "Higgsfield",
+      "description": "Expand an image beyond its borders into a coherent scene",
+      "output": "image",
+      "family": "enhance",
+      "parameters": [],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": ["auto", "1:1", "3:2", "2:3", "4:3", "3:4", "4:5", "5:4", "9:16", "16:9", "21:9"],
+      "unlim": false
+    },
+    {
+      "id": "flux_2_pro_outpaint",
+      "name": "FLUX.2 Pro Outpaint",
+      "provider": "Black Forest Labs",
+      "description": "Per-side pixel expansion painted as a seamless scene extension",
+      "output": "image",
+      "family": "enhance",
+      "parameters": [
+        { "name": "expand_top", "type": "number", "min": -8192, "max": 2048, "default": 0, "description": "Pixels to expand at the top (negative crops)" },
+        { "name": "expand_bottom", "type": "number", "min": -8192, "max": 2048, "default": 0, "description": "Pixels to expand at the bottom (negative crops)" },
+        { "name": "expand_left", "type": "number", "min": -8192, "max": 2048, "default": 0, "description": "Pixels to expand on the left (negative crops)" },
+        { "name": "expand_right", "type": "number", "min": -8192, "max": 2048, "default": 0, "description": "Pixels to expand on the right (negative crops)" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "topaz_video",
+      "name": "Topaz Video Enhance",
+      "provider": "Topaz",
+      "description": "Video enhancement, upscale to 4K, frame interpolation",
+      "output": "video",
+      "family": "enhance",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1080p", "2160p"], "default": "1080p", "description": "Target output resolution" }
+      ],
+      "medias": [{ "role": "video_references", "type": "video" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "bytedance_video_upscale",
+      "name": "Bytedance Video Upscale",
+      "provider": "Bytedance",
+      "description": "Video upscale with content-type presets and fps control",
+      "output": "video",
+      "family": "enhance",
+      "parameters": [
+        { "name": "fps", "type": "number", "min": 24, "max": 60, "default": 24, "description": "Output frame rate" },
+        { "name": "resolution", "type": "string", "options": ["1080p", "2k", "4k"], "default": "2k", "description": "Target output resolution" },
+        { "name": "preset", "type": "string", "options": ["common", "aigc", "short_series", "ugc", "old_film"], "default": "common", "description": "Content-type preset tuning the upscaler" },
+        { "name": "model_version", "type": "string", "options": ["standard", "pro"], "default": "standard", "description": "Upscaler model tier" }
+      ],
+      "medias": [{ "role": "video_references", "type": "video" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "video_background_remover",
+      "name": "Video Background Remover",
+      "provider": "Higgsfield",
+      "description": "Remove the background from a video",
+      "output": "video",
+      "family": "enhance",
+      "parameters": [],
+      "medias": [{ "role": "video_references", "type": "video" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "video_deflicker",
+      "name": "Video Deflicker",
+      "provider": "Higgsfield",
+      "description": "Remove flicker artifacts from a video",
+      "output": "video",
+      "family": "enhance",
+      "parameters": [],
+      "medias": [{ "role": "input_video", "type": "video" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "sync_so",
+      "name": "Sync Lipsync 3",
+      "provider": "sync.so",
+      "description": "Lip-sync a video to an audio track",
+      "output": "video",
+      "family": "enhance",
+      "parameters": [
+        { "name": "sync_mode", "type": "string", "options": ["bounce", "loop", "cut_off", "silence", "remap"], "default": "bounce", "description": "How to reconcile a duration mismatch between video and audio" }
+      ],
+      "medias": [{ "role": "input_video", "type": "video" }, { "role": "input_audio", "type": "audio" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "hf_mult_motion_control",
+      "name": "Genjutsu Motion Transfer",
+      "provider": "Higgsfield",
+      "description": "Transfer motion from a reference video to subjects in reference images",
+      "output": "video",
+      "family": "enhance",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p"], "default": "720p", "description": "Output resolution" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+    {
+      "id": "hf_mult_replace_object",
+      "name": "Genjutsu Object Replace",
+      "provider": "Higgsfield",
+      "description": "Replace objects in a source video using reference images",
+      "output": "video",
+      "family": "enhance",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p"], "default": "720p", "description": "Output resolution" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }],
+      "aspectRatios": [],
+      "unlim": false
+    },
+
+    {
+      "id": "ad_multiplier",
+      "name": "Ad Multiplier",
+      "provider": "Higgsfield",
+      "description": "Multiply one ad into independently edited variants, powered by Seedance 2.5",
+      "output": "video",
+      "family": "ads",
+      "parameters": [
+        { "name": "mode", "type": "string", "options": ["t2v", "omni_reference", "video_edit", "video_extension"], "default": "t2v", "description": "Generation mode" },
+        { "name": "duration", "type": "number", "min": 4, "max": 30, "default": 5, "description": "Duration in seconds" },
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p"], "default": "720p", "description": "Output resolution" },
+        { "name": "generate_audio", "type": "bool", "default": true, "description": "Generate audio for the output video" },
+        { "name": "bitrate_mode", "type": "string", "options": ["standard", "high"], "default": "standard", "description": "Output bitrate" }
+      ],
+      "medias": [{ "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }, { "role": "image_references", "type": "image" }, { "role": "video_references", "type": "video" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": ["auto", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"],
+      "unlim": false
+    },
+    {
+      "id": "marketing_studio_video",
+      "name": "Marketing Studio Video",
+      "provider": "Higgsfield",
+      "description": "One-click product ads, TikTok/Reels ready, with avatar and product slots",
+      "output": "video",
+      "family": "ads",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["480p", "720p", "1080p"], "default": "720p", "description": "Video resolution" },
+        { "name": "generate_audio", "type": "bool", "default": true, "description": "Generate audio for the video" },
+        { "name": "mode", "type": "string", "description": "Marketing video format/style slug from the Marketing Studio presets" },
+        { "name": "avatar_ids", "type": "string_array", "max": 1, "description": "Avatar id (max 1)" },
+        { "name": "product_ids", "type": "string_array", "description": "Marketing Studio product ids" },
+        { "name": "hook_id", "type": "string", "description": "Attention hook id (UGC-family presets only)" },
+        { "name": "setting_id", "type": "string", "description": "Location/vibe setting id (UGC-family presets only)" },
+        { "name": "ad_reference_id", "type": "string", "description": "Recreate the scenario of an analyzed reference ad" }
+      ],
+      "medias": [{ "role": "image", "type": "image" }, { "role": "start_image", "type": "image" }, { "role": "end_image", "type": "image" }],
+      "aspectRatios": ["auto", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"],
+      "durationRange": { "min": 12, "max": 15 },
+      "unlim": false
+    },
+    {
+      "id": "marketing_studio_image",
+      "name": "Marketing Studio Image",
+      "provider": "Higgsfield",
+      "description": "One-click product image ads for social campaigns",
+      "output": "image",
+      "family": "ads",
+      "parameters": [
+        { "name": "resolution", "type": "string", "options": ["1k", "2k", "4k"], "default": "1k", "description": "Output resolution" }
+      ],
+      "medias": [{ "role": "image", "type": "image" }],
+      "aspectRatios": ["auto", "1:1", "3:2", "2:3", "4:3", "3:4", "4:5", "5:4", "9:16", "16:9", "21:9"],
+      "unlim": false
+    },
+    {
+      "id": "ms_image",
+      "name": "DTC Ads",
+      "provider": "Higgsfield",
+      "description": "Brand-kit-aware DTC ad images with avatars, products, and curated ad formats",
+      "output": "image",
+      "family": "ads",
+      "parameters": [
+        { "name": "style_id", "type": "string", "required": true, "description": "Marketing Studio image style id (picked from the style catalog before generation)" },
+        { "name": "brand_kit_id", "type": "string", "description": "Brand kit id; folds logo, colors, fonts, tone into the prompt" },
+        { "name": "resolution", "type": "string", "options": ["1k", "2k", "4k"], "default": "1k", "description": "Output resolution" },
+        { "name": "quality", "type": "string", "options": ["low", "medium", "high"], "default": "low", "description": "Output quality (affects cost)" },
+        { "name": "batch_size", "type": "number", "min": 1, "max": 20, "default": 1, "description": "Images generated per job (cost scales linearly)" },
+        { "name": "product_ids", "type": "string_array", "max": 4, "description": "Up to 4 Marketing Studio product ids" }
+      ],
+      "medias": [{ "role": "image", "type": "image", "max": 14 }],
+      "aspectRatios": ["1:1", "3:2", "2:3", "16:9", "9:16", "4:3", "3:4", "21:9", "auto"],
+      "unlim": false
+    },
+
+    {
+      "id": "text2speech_v2",
+      "name": "Text to Speech V2",
+      "provider": "Higgsfield",
+      "description": "TTS with selectable engine (ElevenLabs, MiniMax, Seed Speech, Vibe Voice, Cozy Voice)",
+      "output": "audio",
+      "family": "speak",
+      "parameters": [
+        { "name": "variant", "type": "string", "required": true, "options": ["elevenlabs", "minimax", "seed_speech", "vibe_voice", "cozy_voice"], "description": "Text-to-speech engine" },
+        { "name": "voice_type", "type": "string", "required": true, "options": ["preset", "element"], "description": "Built-in preset voice or workspace reference element" },
+        { "name": "voice_id", "type": "string", "required": true, "description": "Voice id (preset id or reference element id)" }
+      ],
+      "medias": [],
+      "aspectRatios": [],
+      "unlim": true
+    },
+    {
+      "id": "seed_audio",
+      "name": "Seed Audio 1.0",
+      "provider": "ByteDance",
+      "description": "Text-to-audio synthesis with optional voice/audio or image reference",
+      "output": "audio",
+      "family": "speak",
+      "parameters": [
+        { "name": "format", "type": "string", "options": ["wav", "mp3", "pcm", "ogg_opus"], "default": "wav", "description": "Output audio container format" },
+        { "name": "sample_rate", "type": "number", "options": [8000, 16000, 24000, 32000, 44100, 48000], "default": 24000, "description": "Output sample rate in Hz" },
+        { "name": "speech_rate", "type": "number", "min": -50, "max": 100, "default": 0, "description": "Speech speed adjustment" },
+        { "name": "loudness_rate", "type": "number", "min": -50, "max": 100, "default": 0, "description": "Loudness adjustment" },
+        { "name": "pitch_rate", "type": "number", "min": -12, "max": 12, "default": 0, "description": "Pitch adjustment" },
+        { "name": "voice_type", "type": "string", "options": ["preset", "element"], "description": "Voice source kind (with voice_id)" },
+        { "name": "voice_id", "type": "string", "description": "Preset voice id or voice reference element id" }
+      ],
+      "medias": [{ "role": "image_references", "type": "image" }, { "role": "audio_references", "type": "audio" }],
+      "aspectRatios": [],
+      "unlim": true
+    },
+    {
+      "id": "qwen_audio_tts",
+      "name": "Qwen Audio 3.0 TTS Flash",
+      "provider": "Alibaba Cloud",
+      "description": "Expressive TTS with natural-language style instructions and cloned voices",
+      "output": "audio",
+      "family": "speak",
+      "parameters": [
+        { "name": "voice_type", "type": "string", "required": true, "options": ["preset", "element"], "description": "System voice or cloned reference-element voice" },
+        { "name": "voice_id", "type": "string", "required": true, "description": "Preset or reference-element voice id" },
+        { "name": "instruction", "type": "string", "description": "Natural-language direction for emotion, dialect, speed, or style" },
+        { "name": "language", "type": "string", "options": ["zh", "en", "fr", "de", "ja", "ko", "ru", "pt", "th", "id", "vi", "it", "ms"], "description": "Optional target-language hint" },
+        { "name": "format", "type": "string", "options": ["wav", "mp3", "pcm", "ogg_opus"], "default": "mp3", "description": "Output audio container format" },
+        { "name": "sample_rate", "type": "number", "options": [8000, 16000, 22050, 24000, 44100, 48000], "default": 24000, "description": "Output sample rate in Hz" },
+        { "name": "volume", "type": "number", "min": 0, "max": 100, "default": 50, "description": "Output volume" },
+        { "name": "speech_rate", "type": "number", "min": 0.5, "max": 2, "default": 1, "description": "Speech speed" },
+        { "name": "pitch_rate", "type": "number", "min": 0.5, "max": 2, "default": 1, "description": "Pitch" },
+        { "name": "seed", "type": "number", "min": 0, "max": 65535, "default": 0, "description": "Generation seed" },
+        { "name": "batch_size", "type": "number", "min": 1, "max": 4, "default": 1, "description": "Number of independent variations" }
+      ],
+      "medias": [],
+      "aspectRatios": [],
+      "unlim": false
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "handles": { "someone": "src-someone", "kestrel_lab": "src-kestrel" },
+  "queries": [
+    { "q": "results-first hooks about Claude Code that broke out on TikTok in the last 60 days", "expect": { "hookForms": ["results_first"], "minRatio": 3, "platforms": ["tiktok"], "days": 60, "semantic": "claude code" } },
+    { "q": "my tutorials that flopped", "expect": { "owned": "only", "formats": ["tutorial_walkthrough"], "maxRatio": 0.8, "semantic": "" } },
+    { "q": "@someone talking head 5x", "expect": { "creators": ["src-someone"], "formats": ["talking_head"], "minRatio": 5, "semantic": "" } },
+    { "q": "contrarian hooks on instagram this week", "expect": { "hookForms": ["contrarian"], "platforms": ["instagram"], "days": 7, "semantic": "" } },
+    { "q": "screen recordings that went viral", "expect": { "formats": ["screen_recording"], "minRatio": 3, "semantic": "" } },
+    { "q": "youtube shorts about voice agents", "expect": { "platforms": ["youtube"], "semantic": "voice agents" } },
+    { "q": "linkedin carousels about pricing", "expect": { "platforms": ["linkedin"], "formats": ["carousel"], "semantic": "pricing" } },
+    { "q": "tweets about local models past 2 weeks", "expect": { "platforms": ["twitter"], "days": 14, "semantic": "local models" } },
+    { "q": "open loop hooks that broke out", "expect": { "hookForms": ["open_loop"], "minRatio": 3, "semantic": "" } },
+    { "q": "question hooks on reels", "expect": { "hookForms": ["direct_question"], "platforms": ["instagram"], "semantic": "" } },
+    { "q": "how-to hooks for cursor", "expect": { "hookForms": ["howto_promise"], "semantic": "cursor" } },
+    { "q": "news hooks today", "expect": { "hookForms": ["news_react"], "days": 1, "semantic": "" } },
+    { "q": "list hooks 4.5x", "expect": { "hookForms": ["list_tease"], "minRatio": 4.5, "semantic": "" } },
+    { "q": "number hooks dual-high", "expect": { "hookForms": ["number_stat"], "dualHigh": true, "semantic": "" } },
+    { "q": "confession hooks that didn't work", "expect": { "hookForms": ["confession"], "maxRatio": 0.8, "semantic": "" } },
+    { "q": "skits this month", "expect": { "formats": ["skit"], "days": 30, "semantic": "" } },
+    { "q": "green screen breakouts on tt", "expect": { "formats": ["green_screen"], "minRatio": 3, "platforms": ["tiktok"], "semantic": "" } },
+    { "q": "long-form duds last 3 months", "expect": { "formats": ["long_form"], "maxRatio": 0.8, "days": 90, "semantic": "" } },
+    { "q": "posts i made about agent memory", "expect": { "owned": "only", "semantic": "agent memory" } },
+    { "q": "@nobody_tracked walkthroughs", "expect": { "creators": [], "formats": ["tutorial_walkthrough"], "semantic": "", "matched": [{ "span": "@nobody_tracked", "as": "@nobody_tracked is not tracked" }, { "span": "walkthroughs", "as": "format" }] } }
+  ]
+}

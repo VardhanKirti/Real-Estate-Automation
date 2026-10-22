@@ -1,0 +1,47 @@
+node_modules
+.next/
+.next-*/
+data/*.db
+data/*.db-*
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+.worktrees/
+.playwright-mcp/
+claude code images/
+dir-sidebar.jpeg
+
+# Firecrawl scratch (scraped API docs, tokens) — never commit.
+.firecrawl/
+
+# Secrets — never commit real credentials. Only .env.example is tracked.
+.env
+.env.local
+.env.*.local
+data/ad-intel/
+
+# Operator media and account data — never ship someone's identity assets.
+public/content-media/*
+!public/content-media/manifest.json
+data/higgsfield/
+
+# Generated on first run from the code templates.
+data/content-pipelines.json
+data/content-queue.json
+
+# Creative Engine: campaign documents, runs, ledger and rehosted Arcads assets are local state
+data/creative-engine/
+public/content-media/creative-engine/
+# Pre-rename names, kept until the /api/ad-engine alias is removed so a
+# half-migrated machine never stages real data (S02 FR-16)
+data/ad-engine/
+public/content-media/ad-engine/
+
+# Filming mode: the demo dataset and the switch file, both local only
+/demo-data/
+.glados-mode
+.glados-modules.json
+
+# Everything under data/ is per-machine state; none of it is ever tracked.
+/data/
+dev.log

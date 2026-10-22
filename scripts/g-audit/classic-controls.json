@@ -1,0 +1,19 @@
+{
+  "_doc": "Classic control classes (SPEC GP4 FR-GP4.2, built from app/globals.css, components/funnel/funnel.css and components/workflow-canvas/canvas.css on 2026-10-09). Read by scripts/g-audit.mjs (runtime guard) and tests/g-controls.test.ts (source guard). A new Classic class is one line in `classes`. `onControlOnly` classes fail only when the element carrying them is itself a control (glass-* also dress plain panels). `utilityOnControl` utilities fail only on button, a, input, select, textarea. `kitControlClasses` are the kit's own control recipes (FR-GP4.1) that satisfy the guard like a data-g attribute.",
+  "classes": [
+    "ae-btn", "ae-btn-ink", "ae-btn-sm", "ae-btn-danger", "ae-icon-btn", "ae-chip", "ae-pill", "ae-tab", "ae-check",
+    "ae-input", "ae-input-lg", "ae-select", "ae-pop", "ae-pop-item", "ae-pop-menu", "ae-pop-row", "ae-tl-range",
+    "c-btn", "c-btn-primary", "c-chip", "c-pop",
+    "ap-chip", "ap-pill", "ap-seg-rows",
+    "bh-btn", "bh-btn-primary", "bh-pill",
+    "fc-chip", "fc-chips", "fc-input", "fc-kebab", "fc-kebab-wrap", "fc-menu", "fc-pill",
+    "h6-seg",
+    "ib-btn", "ib-btn-dark", "ib-check", "ib-check-row", "ib-chip", "ib-chips", "ib-seg", "ib-seg-btn",
+    "wz-chip", "wz-chip-accent", "wz-select", "wz-tab", "wz-tab-on", "wz-new",
+    "tb-btn", "tb-primary",
+    "hoverable"
+  ],
+  "onControlOnly": ["glass-chip", "glass-panel", "glass-label"],
+  "utilityOnControl": ["border-os-border", "bg-os-surface", "rounded-lg-t", "text-os-accent"],
+  "kitControlClasses": ["g-btn", "g-btn-ink", "g-btn-sm", "g-btn-icon", "g-chip", "g-seg", "g-tab", "g-input", "g-select", "g-check", "g-toggle", "g-menu", "g-pop", "g-th-sort"]
+}

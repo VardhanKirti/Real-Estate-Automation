@@ -1,0 +1,227 @@
+/* ── Content Lab v2 · motion polish ──────────────────────────────────────────────────────────────────
+   Loaded by app/lab/layout.tsx after app/globals.css, so it refines the `Content Lab v2 · motion` block
+   there (03-motion.md) without restructuring it. Same language as the rest of GladOS: --ease
+   (cubic-bezier(.32,.72,0,1)), lifts of 1 to 3px at --g-dur-lift, presses at scale .97, entrances that
+   rise 8 to 10px. Rules of this file (tests/lab-motion-polish.test.ts):
+   - keyframes animate opacity and transform only; every selector starts with .lab or :root;
+   - :hover lives inside (hover: hover) and (pointer: fine);
+   - nothing loops; a reduced-motion block at the end makes everything instant;
+   - every colour is a formula over existing tokens (no raw colour).
+   Mirrors LAB_ENTER, LAB_POP and LAB_COUNT in lib/lab/motion.ts. */
+
+/* ── tokens ── */
+.lab {
+  --lab-enter-dur: 360ms;
+  --lab-enter-step: 45ms;
+  --lab-enter-rise: 10px;
+  --lab-pop-in: 180ms;
+  --lab-pop-out: 120ms;
+  --lab-count-hold: 1000ms;
+  --lab-lift: -3px;
+  --lab-glow-c: color-mix(in srgb, var(--lab-aurora-hot) 70%, var(--lab-ink-hero));
+  --lab-glow-a: 65%;
+  --lab-glow:
+    0 18px 38px -16px color-mix(in srgb, var(--lab-glow-c) var(--lab-glow-a), transparent),
+    0 0 28px -6px color-mix(in srgb, var(--lab-glow-c) 30%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--lab-glow-c) 22%, transparent),
+    0 4px 14px -6px color-mix(in srgb, var(--lab-shade) 30%, transparent);
+  --lab-ring: color-mix(in srgb, var(--lab-focus) 85%, transparent);
+  --lab-ring-glow: color-mix(in srgb, var(--lab-glow-c) 55%, transparent);
+}
+:root[data-ui='glados'][data-mode='light'] .lab { --lab-glow-a: 38%; --lab-glow-c: var(--lab-aurora-hot); }
+/* Classic: the same moves, smaller and quieter. */
+:root:not([data-ui='glados']) .lab {
+  --lab-enter-dur: 280ms;
+  --lab-enter-step: 35ms;
+  --lab-enter-rise: 6px;
+  --lab-lift: -1px;
+  --lab-glow-a: 30%;
+  --lab-glow-c: color-mix(in srgb, var(--lab-aurora-hot) 55%, var(--lab-ink-2));
+  --lab-glow:
+    0 10px 24px -14px color-mix(in srgb, var(--lab-glow-c) var(--lab-glow-a), transparent),
+    0 2px 8px -4px color-mix(in srgb, var(--lab-shade) 22%, transparent);
+}
+/* Console stays flat: no glow, only movement. */
+:root:not([data-ui='glados'])[data-theme='console'] .lab { --lab-glow: 0 0 0 1px var(--lab-dot-off); --lab-ring-glow: transparent; }
+
+@keyframes lab2-enter { from { opacity: 0; transform: translate3d(0, var(--lab-enter-rise, 10px), 0); } to { opacity: 1; transform: none; } }
+@keyframes lab2-pop-in { from { opacity: 0; transform: translateY(-4px) scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes lab2-pop-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-4px) scale(0.97); } }
+@keyframes lab2-chip-in { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: none; } }
+@keyframes lab2-ripple { from { opacity: 0.9; transform: scale(1); } to { opacity: 0; transform: scale(1.06, 1.35); } }
+@keyframes lab2-hold { from { opacity: 0; } to { opacity: 0; } }
+@keyframes lab2-dialog-in { from { opacity: 0; transform: translateY(10px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes lab2-scrim-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── 1. page entrance: one orchestrated rise per page, every page, both trees ─────────────────────────
+   Blocks rise in reading order; a container that only lays out (stack, split, studio) passes its index to
+   its children. Glass panels animate themselves, never an ancestor of theirs, so their blur never drops
+   out mid-fade. Elements the Today intro also animates (.lab2-narr, .lab2-hero-num, .lab2-delta) carry
+   the intro's exact animation here too, so the intro attribute arriving or leaving never restarts them.
+   Transform and opacity only: no layout shift. */
+.lab :where(.lab2-page) :is(
+  .lab2g-stack > :not(.lab2g-split, .lab2g-studio, .lab2g-cards),
+  .lab2g-split > *, .lab2g-studio > *, .lab2g-cards > :not(.lab2g-cardgrid), .lab2g-cardgrid > *,
+  .lab2c-main > :not(.lab2c-split, .lab2c-studio, .lab2-today-top, .lab2-today-bar, :has(> .lab2-today-rows)),
+  .lab2c-split > *, .lab2c-studio > *,
+  .lab2-today-heroes .lab2-hero, .lab2-heropair-foot, .lab2-today-cards > :not(.lab2-narr),
+  .lab2-today-bar > *, .lab2-today-rows .lab2-row-head, .lab2-today-rows [data-lab='Tile'],
+  .lab2-today-section, .lab2-today-foot > *,
+  .lab2-empty
+) {
+  animation: lab2-enter var(--lab-enter-dur) var(--ease, var(--lab-ease-out))
+    calc(min(var(--lab-i, 0) + var(--lab-j, 0), 6) * var(--lab-enter-step)) backwards;
+}
+/* order: top-level blocks */
+.lab :is(.lab2g-stack, .lab2c-main) > :nth-child(2) { --lab-i: 1; }
+.lab :is(.lab2g-stack, .lab2c-main) > :nth-child(3) { --lab-i: 2; }
+.lab :is(.lab2g-stack, .lab2c-main) > :nth-child(4) { --lab-i: 3; }
+.lab :is(.lab2g-stack, .lab2c-main) > :nth-child(5) { --lab-i: 4; }
+.lab :is(.lab2g-stack, .lab2c-main) > :nth-child(n + 6) { --lab-i: 5; }
+/* order inside a layout container (adds to the container's index) */
+.lab :is(.lab2g-split, .lab2g-studio, .lab2c-split, .lab2c-studio, .lab2g-cards) > :nth-child(2) { --lab-j: 1; }
+.lab :is(.lab2g-split, .lab2g-studio, .lab2c-split, .lab2c-studio, .lab2g-cards) > :nth-child(n + 3) { --lab-j: 2; }
+.lab .lab2g-cardgrid > * { --lab-j: 1.5; }
+.lab .lab2g-cardgrid > :nth-child(n + 4) { --lab-j: 2.5; }
+.lab .lab2g-cardgrid > :nth-child(n + 7) { --lab-j: 3.5; }
+/* Today: heroes, cards, bar, rows, list, foot */
+.lab .lab2-today-heroes .lab2-hero:nth-child(2) { --lab-i: 1; }
+.lab .lab2-heropair-foot { --lab-i: 2; }
+.lab .lab2-today-cards > :not(.lab2-narr) { --lab-i: 1.3; } /* the Window wrapper: in step with its card below */
+.lab .lab2-today-bar > * { --lab-i: 3; }
+.lab .lab2-today-bar > :nth-child(2) { --lab-i: 3.5; }
+.lab .lab2-today-rows .lab2-row-head { --lab-i: 4; }
+.lab .lab2-today-rows [data-lab='Tile'] { --lab-i: 4; --lab-j: 0.5; }
+.lab .lab2-today-rows [data-lab='Tile']:nth-child(2) { --lab-j: 1; }
+.lab .lab2-today-rows [data-lab='Tile']:nth-child(n + 3) { --lab-j: 1.5; }
+.lab .lab2-today-section { --lab-i: 5; }
+.lab .lab2-today-foot > * { --lab-i: 5.5; }
+.lab .lab2-today-foot > :nth-child(2) { --lab-i: 6; }
+/* The narrative cards and the hero numerals: the 03.3 intro's own declarations, on every load. */
+.lab .lab2-page .lab2-narr[data-kind='brief'] { animation: lab2-rise 380ms var(--lab-ease-out) 200ms both; }
+.lab .lab2-page .lab2-narr[data-kind='window'] { animation: lab2-rise 380ms var(--lab-ease-out) 260ms both; }
+.lab .lab2-page .lab2-delta { animation: lab2-pop 140ms var(--lab-ease-out) 560ms both; }
+/* Chips and badges pop in just after their row. */
+.lab .lab2-page :is(.lab2g-badge, .lab2c-badge, .lab2-actions > *, [data-sample-badge]) {
+  animation: lab2-chip-in var(--lab-dur-s) var(--lab-ease-snap) 160ms backwards;
+}
+.lab .lab2-page .lab2-actions > :nth-child(2) { animation-delay: 190ms; }
+.lab .lab2-page .lab2-actions > :nth-child(3) { animation-delay: 220ms; }
+.lab .lab2-page .lab2-actions > :nth-child(n + 4) { animation-delay: 250ms; }
+
+/* ── 2. hero count-up (CountUpText): the live numeral is held invisible until hydration counts it ── */
+.lab .lab2-count { position: relative; display: inline-block; }
+.lab .lab2-count-ghost { visibility: hidden; }
+.lab .lab2-count-live { position: absolute; left: 0; top: 0; white-space: nowrap; }
+.lab .lab2-count[data-count='arm'] .lab2-count-live { animation: lab2-hold var(--lab-count-hold) linear; }
+
+/* ── 3. press feedback on everything clickable ── */
+.lab :is(.lab2-tab, .lab2g-fchip, .lab2c-fchip, .lab2c-btn, .lab2-pager-btn, .lab2-scrub-btn, .lab2-arrow, .lab2-round,
+  .lab2g-chiplink, .lab2g-predcard, .lab2g-hook, .lab2-seeall, .lab2-textlink, .lab2-setup) {
+  transition:
+    background-color var(--g-dur-colour, 150ms) var(--lab-ease-out),
+    color var(--g-dur-colour, 150ms) var(--lab-ease-out),
+    opacity var(--g-dur-colour, 150ms) var(--lab-ease-out),
+    transform var(--lab-dur-xs) var(--lab-ease-out);
+}
+.lab :is(.lab2g-fchip, .lab2c-fchip, .lab2c-btn, .lab2-pager-btn, .lab2-scrub-btn, .lab2-arrow, .lab2-round, .lab2g-chiplink, .lab2-seeall):active { transform: scale(0.96); }
+.lab :is(.lab2-tab, .lab2g-predcard, .lab2g-hook, .lab2-menu-item):active { transform: scale(0.98); }
+.lab :is(a.lab2g-row, button.lab2g-row, .lab2g-lane-link, .lab2c-lane, .lab2c-iitem, .lab2g-ideaitem):active { transform: scale(0.995); }
+.lab :is(a.lab2g-row, button.lab2g-row, .lab2g-lane-link, .lab2c-lane, .lab2c-iitem, .lab2g-ideaitem) { transition: background-color var(--g-dur-colour, 150ms) var(--lab-ease-out), transform var(--lab-dur-xs) var(--lab-ease-out); }
+
+/* ── 4. hover: lift and a soft accent glow, painted on a pseudo layer whose opacity is what moves ── */
+/* The glow rides on the body that lifts, so ring and shadow move with the card. */
+.lab [data-lab='Tile']::after { content: none; }
+.lab [data-lab='Tile'] .lab2-tile-body::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: var(--lab-glow);
+  opacity: 0; pointer-events: none; transition: opacity var(--lab-dur-m) var(--ease, var(--lab-ease-out));
+}
+.lab .lab2-tile-body { transition: transform var(--lab-dur-m) var(--ease, var(--lab-ease-out)); }
+.lab :is(.lab2g-postcard, .lab2c-pcard, .lab2c-pred-card, .lab2g-predcard) { position: relative; transition: transform var(--lab-dur-m) var(--ease, var(--lab-ease-out)), background-color var(--g-dur-colour, 150ms) var(--lab-ease-out); }
+.lab :is(.lab2g-postcard, .lab2c-pcard, .lab2c-pred-card, .lab2g-predcard)::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: var(--lab-glow);
+  opacity: 0; pointer-events: none; transition: opacity var(--lab-dur-m) var(--ease, var(--lab-ease-out));
+}
+/* Narrative cards: a stronger radiant glow in their own colour, and the mesh swells a little. */
+.lab .lab2-narr {
+  transition: transform var(--lab-dur-m) var(--ease, var(--lab-ease-out)), box-shadow var(--lab-dur-l) var(--ease, var(--lab-ease-out));
+}
+.lab .lab2-narr::before { transition: scale 700ms var(--ease, var(--lab-ease-out)); }
+.lab .lab2-search { position: relative; transition: transform var(--lab-dur-s) var(--ease, var(--lab-ease-out)); }
+
+@media (hover: hover) and (pointer: fine) {
+  .lab [data-lab='Tile']:hover .lab2-tile-body { transform: translateY(var(--lab-lift)); }
+  .lab [data-lab='Tile']:hover .lab2-tile-body::after { opacity: 1; }
+  .lab :is(.lab2g-postcard, .lab2c-pcard, .lab2c-pred-card, .lab2g-predcard):hover { transform: translateY(var(--lab-lift)); }
+  .lab :is(.lab2g-postcard, .lab2c-pcard, .lab2c-pred-card, .lab2g-predcard):hover::after { opacity: 1; }
+  .lab .lab2-narr:hover { transform: translateY(var(--lab-lift)); }
+  .lab .lab2-narr:hover::before { scale: 1.08; }
+  :root[data-ui='glados']:not([data-mode='light']) .lab .lab2-narr:hover {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--n-a) 45%, transparent),
+      0 0 56px 4px color-mix(in srgb, var(--n-a) 50%, transparent),
+      0 26px 96px -6px color-mix(in srgb, var(--n-a) 85%, transparent),
+      0 52px 150px -20px color-mix(in srgb, var(--n-b) 70%, transparent),
+      0 12px 40px -16px color-mix(in srgb, var(--lab-shade) 35%, transparent);
+  }
+  :root:not([data-ui='glados']) .lab .lab2-narr:hover,
+  :root[data-ui='glados'][data-mode='light'] .lab .lab2-narr:hover {
+    box-shadow: var(--lab-narr-shadow), 0 0 40px 0 color-mix(in srgb, var(--n-a) 35%, transparent), 0 22px 56px -16px color-mix(in srgb, var(--n-a) 70%, transparent);
+  }
+  :root:not([data-ui='glados'])[data-theme='console'] .lab .lab2-narr:hover { box-shadow: var(--lab-narr-shadow); }
+  .lab .lab2g-fchip:not([aria-current='true']):hover { background-color: var(--lab-glass); }
+  .lab .lab2c-btn:not([aria-disabled='true']):hover { background-color: var(--lab-dot-off); }
+  .lab .lab2c-fchip:not([aria-current='true']):hover { background-color: var(--lab-dot-off); }
+  .lab .lab2-search:hover::before { opacity: 0.5; }
+}
+
+/* ── 5. the search pill ("Ask the Lab"): hover brightens, focus glows and radiates once ── */
+.lab .lab2-search::before, .lab .lab2-search::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+}
+.lab .lab2-search::before {
+  box-shadow: 0 0 0 1px var(--lab-ring), 0 0 22px 0 var(--lab-ring-glow);
+  transition: opacity var(--lab-dur-s) var(--ease, var(--lab-ease-out));
+}
+.lab .lab2-search::after { box-shadow: 0 0 0 1.5px var(--lab-ring-glow); }
+.lab .lab2-search:focus-within { outline: 0; }
+.lab .lab2-search:focus-within::before { opacity: 1; box-shadow: 0 0 0 1.5px var(--lab-ring), 0 0 32px 4px var(--lab-ring-glow); }
+.lab .lab2-search:focus-within::after { animation: lab2-ripple 640ms var(--lab-ease-out) 1; }
+.lab .lab2-search .lab2-search-icon, .lab .lab2-search .lab2-kbd { transition: opacity var(--lab-dur-s) var(--lab-ease-out), transform var(--lab-dur-s) var(--lab-ease-out); }
+.lab .lab2-search:focus-within .lab2-kbd, .lab .lab2-search[data-filled] .lab2-kbd { opacity: 0; transform: scale(0.8); }
+.lab .lab2-search-input { caret-color: var(--lab-glow-c); }
+:root:not([data-ui='glados'])[data-theme='console'] .lab .lab2-search:focus-within::after { animation: none; }
+/* The Ask panel's own box (both trees) takes the same focus ring. */
+.lab :is(.lab2g-askbox, .lab2c-ask-form) :is(input, textarea) { transition: box-shadow var(--g-dur-colour, 150ms) var(--lab-ease-out); }
+.lab :is(.lab2g-askbox, .lab2c-ask-form) :is(input, textarea):focus-visible {
+  outline: 0; box-shadow: inset 0 0 0 1.5px var(--lab-ring), 0 0 24px 0 var(--lab-ring-glow);
+}
+
+/* ── 6. popovers and menus: scale and fade from the corner they hang from; close the same way back ── */
+.lab .lab2-menu { transform-origin: 20px 0; animation: lab2-pop-in var(--lab-pop-in) var(--lab-ease-out) both; }
+.lab :is(.lab2g-run-pop, .lab2c-pop) { transform-origin: 24px 0; animation: lab2-pop-in var(--lab-pop-in) var(--lab-ease-out) both; }
+.lab :is(.lab2-menu, .lab2g-run-pop, .lab2c-pop)[data-lab-closing] { pointer-events: none; animation: lab2-pop-out var(--lab-pop-out) var(--lab-ease-in) both; }
+.lab .lab2-menu-item { animation: lab2-fade var(--lab-dur-s) var(--lab-ease-out) both; }
+.lab .lab2-menu-item:nth-child(2) { animation-delay: 25ms; }
+.lab .lab2-menu-item:nth-child(3) { animation-delay: 50ms; }
+.lab .lab2-menu-item:nth-child(n + 4) { animation-delay: 75ms; }
+/* Segmented: the thumb that flies between options (Segmented.tsx). */
+.lab .lab2-seg { position: relative; }
+.lab .lab2-seg-opt { position: relative; z-index: 1; }
+.lab .lab2-seg-fly { position: absolute; z-index: 0; border-radius: var(--lab-r-pill); background: var(--lab-ink-hero); transform-origin: 0 50%; pointer-events: none; }
+.lab .lab2-seg[data-flying] .lab2-seg-opt[aria-selected='true'] { background-color: transparent; }
+
+/* ── 7. dialogs and sheet contents ── */
+.lab :is(.labv-dialog-layer, .lab2c-dialog-layer) > .lab2-scrim { animation: lab2-scrim-in var(--lab-dur-s) var(--lab-ease-out) both; }
+.lab :is(.labv-dialog, .lab2c-dialog) { animation: lab2-dialog-in var(--lab-dur-enter) var(--lab-ease-out) both; }
+.lab .lab2-sheet-body > * { --lab-enter-rise: 8px; animation: lab2-enter 300ms var(--ease, var(--lab-ease-out)) 60ms backwards; }
+.lab .lab2-sheet-body > :nth-child(2) { animation-delay: 90ms; }
+.lab .lab2-sheet-body > :nth-child(3) { animation-delay: 120ms; }
+.lab .lab2-sheet-body > :nth-child(n + 4) { animation-delay: 150ms; }
+
+/* ── reduced motion: last rule. Everything is instant; held numerals show at once. ── */
+@media (prefers-reduced-motion: reduce) {
+  .lab *, .lab *::before, .lab *::after { animation: none !important; transition-duration: 0ms !important; }
+  .lab .lab2-narr:hover::before { scale: none; }
+}
+/* ── end Content Lab v2 · motion polish ── */
