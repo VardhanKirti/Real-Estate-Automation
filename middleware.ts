@@ -62,6 +62,16 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   if (isOpenPath(pathname)) return NextResponse.next();
 
+  // GLADOS_DISABLE_GATE: this gate's whole mechanism (below) is the
+  // self-hosted-server model — middleware calls back into "itself" over
+  // loopback HTTP to ask whether a password exists. On a serverless
+  // deployment (Netlify, Vercel, ...) there is no "itself" to call back
+  // into on that address, so the probe always fails closed and every
+  // request gets redirected to /login, with no way to actually pass it.
+  // Set this flag on such a deployment to make the whole instance public
+  // (equivalent to "no password, open to everyone") instead.
+  if (process.env.GLADOS_DISABLE_GATE === '1') return NextResponse.next();
+
   // Self-hosted Next puts its internal host on req.nextUrl, so both the
   // loopback rule and the CSRF origin comparison read the real headers.
   const { hostname, origin: requestOrigin } = requestOriginOf(req.headers);
