@@ -1,0 +1,8 @@
+[build]
+  # better-sqlite3's prebuilt binary (downloaded by a plain `npm install`) was
+  # compiled against a newer glibc than Netlify's function runtime provides,
+  # so it fails to load at all in production (ERR_DLOPEN_FAILED). Rebuilding
+  # it from source here, against Netlify's own build image, produces a
+  # binary that actually matches the runtime. Scoped to this file (not
+  # package.json) so it only affects the Netlify build, not local dev.
+  command = "npm rebuild better-sqlite3 --build-from-source && npm run build"
