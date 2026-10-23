@@ -73,7 +73,7 @@ export async function rawLeads(): Promise<{ leads: SkyLead[]; total: number } | 
       headers: { Authorization: `Bearer ${cfg.token}`, Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ page_no: 1, limit: 200 }),
       cache: 'no-store',
-      signal: AbortSignal.timeout(6000),
+      signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) throw new Error(`Skyescraper HTTP ${res.status}`);
     const body = (await res.json()) as { data?: { leads?: SkyLead[]; total?: number } };
@@ -90,7 +90,7 @@ async function rawProjects(): Promise<{ projects: SkyProject[]; total: number } 
       headers: { Authorization: `Bearer ${cfg.token}`, Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ page_no: 1, limit: 12 }),
       cache: 'no-store',
-      signal: AbortSignal.timeout(6000),
+      signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) throw new Error(`Skyescraper HTTP ${res.status}`);
     const body = (await res.json()) as { data?: { projects?: SkyProject[]; total?: number } };
