@@ -1449,7 +1449,13 @@ function rowToAgent(row: AgentRow): Agent {
 }
 
 export function openDb(path: string) {
-  const db = new Database(path);
+  // timeout: Next.js prerenders several pages in parallel during build, and
+  // each one calls getDb() independently — on a brand-new file they all race
+  // to create/migrate it at once, and better-sqlite3 throws SQLITE_BUSY
+  // immediately on any lock contention by default. A busy timeout makes it
+  // retry for up to 5s instead of failing outright, which is what every
+  // concurrent build worker needs here.
+  const db = new Database(path, { timeout: 5000 });
   db.pragma('journal_mode = WAL');
   db.exec(DDL);
   db.exec(LAB_DDL); // Content Lab (additive)
