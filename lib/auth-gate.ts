@@ -31,7 +31,14 @@ export function isOpenPath(pathname: string): boolean {
   return (
     (OPEN_PATHS as readonly string[]).includes(pathname) ||
     (TOKEN_PATHS as readonly string[]).includes(pathname) ||
-    pathname.startsWith('/api/webhooks/')
+    pathname.startsWith('/api/webhooks/') ||
+    // These proxy to the Skyescraper backend (Vercel), which checks its own
+    // SKYESCRAPER_API_TOKEN bearer token independently — they were never
+    // meant to need FounderOS's own session cookie too. On a serverless host
+    // the cookie gate's self-probe (authStatus() below) also has no loopback
+    // server to reach and fails closed, which would otherwise 401 every
+    // real-estate call regardless of a valid bearer token.
+    pathname.startsWith('/api/real-estate/')
   );
 }
 
