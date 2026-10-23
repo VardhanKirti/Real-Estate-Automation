@@ -52,21 +52,32 @@ export const metadata: Metadata = {
 };
 
 function buildCommands(off: string[]): Command[] {
-  const db = getDb();
-  const tools: Command[] = db.tools.all().map((t) => ({
-    id: `tool-${t.id}`,
-    label: t.name,
-    keywords: `${t.category} ${t.description}`,
-    href: '/integrations',
-    hint: 'tool',
-  }));
-  const agents: Command[] = db.agents.all().map((a) => ({
-    id: `agent-${a.id}`,
-    label: a.name,
-    keywords: `${a.role} ${a.description}`,
-    href: '/agents',
-    hint: 'agent',
-  }));
+  // getDb() can throw where the local database is unavailable (e.g. a
+  // serverless host with no native SQLite support) — this runs in the root
+  // layout, so an uncaught throw here would 500 every single page, including
+  // pages that have nothing to do with tools/agents. Degrade to just the
+  // static view/action commands instead of taking the whole app down.
+  let tools: Command[] = [];
+  let agents: Command[] = [];
+  try {
+    const db = getDb();
+    tools = db.tools.all().map((t) => ({
+      id: `tool-${t.id}`,
+      label: t.name,
+      keywords: `${t.category} ${t.description}`,
+      href: '/integrations',
+      hint: 'tool',
+    }));
+    agents = db.agents.all().map((a) => ({
+      id: `agent-${a.id}`,
+      label: a.name,
+      keywords: `${a.role} ${a.description}`,
+      href: '/agents',
+      hint: 'agent',
+    }));
+  } catch (err) {
+    console.warn(`[palette] database unavailable, showing static commands only: ${err instanceof Error ? err.message : String(err)}`);
+  }
   // Views come from the nav (lib/nav.ts, SPEC S12 FR-3) so ⌘K cannot drift from the sidebar.
   return [...viewCommands().filter((c) => !c.href || !off.includes(c.href)), ...ACTION_COMMANDS, ...EXTERNAL_COMMANDS, ...agents, ...tools];
 }
